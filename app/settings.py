@@ -1,0 +1,5 @@
+SQLALCHEMY_DATABASE_URI='sqlite:///main.db'
+SECRET_KEY='753159Simo11'
+UPLOAD_FOLDER='static/files'
+LOGIN_VIEW = 'Login'
+DEBUG=True
