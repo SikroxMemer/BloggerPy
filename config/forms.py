@@ -2,9 +2,7 @@ from wtforms import SelectField, StringField, SubmitField, PasswordField, FileFi
 from wtforms.validators import InputRequired, Length , ValidationError , Optional
 from flask_ckeditor import CKEditorField
 from flask_wtf import FlaskForm
-from modals.Modals import Category , Post , User
-
-
+from .models import Category , Post , User
 
 class RegiterationForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(
