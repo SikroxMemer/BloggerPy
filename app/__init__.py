@@ -14,6 +14,7 @@ def create(config_file='settings.py'):
         db.init_app(app)
         login_manager.init_app(app)
         bcrypt.init_app(app)
+        db.create_all()
 
     app.register_blueprint(routes)
 
