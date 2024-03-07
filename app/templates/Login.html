@@ -1,15 +1,38 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% include 'Base.template.html' %}
     <title>Login Page</title>
 </head>
-<body>
-    <section>
 
-    </section>
+<body class="d-flex 
+flex-column justify-content-center 
+align-content-center 
+align-items-center p-5">
+
+    <form method="post" action="" class="d-flex 
+        flex-column 
+        align-content-center 
+        justify-content-center 
+        align-items-center
+        gap-2
+        col-3">
+        <h1 class="text-center">Login</h1>
+        {{ form.hidden_tag() }}
+        {{ form.email }}
+        {{ form.password }}
+        {{ form.submit }}
+        {% if form.errors %}
+        {% for key , value in form.errors.items() %}
+        <p class="text-danger text-center">{{key}} : {{value[0]}}</p>
+        {% endfor %}
+        {% endif %}
+        <p>
+            New User ? <a href="{{url_for('main.register')}}">Register Here</a>
+        </p>
+    </form>
+
 </body>
+
 </html>

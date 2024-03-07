@@ -13,10 +13,10 @@ class ReiterationForm(FlaskForm):
     email = StringField(validators=[InputRequired(), Length(
         min=6, max=70)], render_kw={"placeholder": "Email", "class": "form-control"})
 
-    submit = SubmitField("Register", render_kw={"class": "btn btn-primary"})
+    submit = SubmitField("Register", render_kw={
+                         "class": "btn btn-primary form-control"})
 
-    @staticmethod
-    def validate_username(username):
+    def validate_username(self, username):
         existing_user = User.query.filter_by(
             username=username.data
         ).first()
@@ -26,26 +26,33 @@ class ReiterationForm(FlaskForm):
                 "Username already exists , Please Chose Another One"
             )
 
+
 class LoginForm(FlaskForm):
     email = StringField(validators=[InputRequired(), Length(min=4, max=70)], render_kw={
-        "placeholder": "Email"})
+        "placeholder": "Email", "class": "form-control"})
 
     password = PasswordField(validators=[InputRequired(), Length(
-        min=7, max=20)], render_kw={"placeholder": "Password"})
+        min=7, max=20)], render_kw={"placeholder": "Password", "class": "form-control"})
 
-    submit = SubmitField("Login", render_kw={"class": "btn btn-primary"})
+    submit = SubmitField("Login", render_kw={
+                         "class": "btn btn-primary form-control"})
 
 
 class PostForm(FlaskForm):
+
+    
+
     title = StringField(validators=[InputRequired(), Length(
-        min=4, max=70)], render_kw={"placeholder": "Title"})
+        min=4, max=70)], render_kw={"placeholder": "Title", "class": "form-control"})
 
     story = CKEditorField(validators=[InputRequired(), Length(
         min=4, max=5000)], render_kw={"placeholder": "Story"})
 
-    category = SelectField(validators=[InputRequired()])
+    category = SelectField(validators=[InputRequired()], render_kw={
+                           "class": "form-control"})
 
-    submit = SubmitField("Post")
+    submit = SubmitField("Post", render_kw={
+                         "class": "btn btn-primary form-control"})
 
 
 class ReplyForm(FlaskForm):
