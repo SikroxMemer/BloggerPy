@@ -60,11 +60,10 @@ class ReplyForm(FlaskForm):
 
 
 class EditForm(FlaskForm):
-    edit_title = StringField(
-        render_kw={"placeholder": "Title", 'class': 'form-control'})
+    edit_title = StringField(render_kw={"placeholder": "Title", 'class': 'form-control'})
     edit_story = CKEditorField()
-    edit_submit = SubmitField("Modifier", render_kw={
-        'class': 'btn btn-primary'})
+    edit_category = SelectField(render_kw={'class': 'form-control'})
+    edit_submit = SubmitField("Modify", render_kw={'class': 'btn btn-primary form-control'})
 
 
 class ProfileForm(FlaskForm):

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'Base.template.html' %}
+    <title>Post #{{post.id}}</title>
+</head>
+
+<body>
+    {% include 'Navbar.template.html' %}
+    <main class="container">
+        <section class="col-12 p-5">
+            {% for message in get_flashed_messages() %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+            <div class="card">
+                <div class="card-header">
+                    {{ post.title }}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{post.post_owner.username}}</h5>
+                    <p class="card-text">
+                        {{post.category.title}}
+                    </p>
+                    <p class="card-text">
+                        {{post.story|safe}}
+                    </p>
+                    {% if post.post_owner.id == current_user.id %}
+                        <a href="/post/delete/id={{post.id}}" class="btn btn-danger">
+                            Delete
+                        </a>
+                        <a href="/post/edit/id={{post.id}}" class="btn btn-warning">
+                            Modify
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    {{post.post_date}}
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>
