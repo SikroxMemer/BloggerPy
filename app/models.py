@@ -63,15 +63,3 @@ class Comment(db.Model):
         return '<Comment %r>' % self.id
 
 
-class Ratings(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    post_id = db.Column(db.Integer, db.ForeignKey(
-        'post.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
-    post = db.relationship('Post', backref=db.backref(
-        'rating', cascade='all, delete-orphan'))
-    positive = db.Column(db.Integer, default=0)
-    negative = db.Column(db.Integer, default=0)
-    user_id = db.Column(db.Integer, db.ForeignKey(
-        'user.id', ondelete='CASCADE', onupdate='CASCADE'), unique=True, nullable=False)
-    user = db.relationship('User', backref=db.backref(
-        'rating', cascade='all, delete-orphan'))

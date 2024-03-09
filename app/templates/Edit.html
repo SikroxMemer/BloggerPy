@@ -23,6 +23,13 @@
                 </form>
             </div>
         </section>
+        <script>
+            document.getElementById("edit_title").value = "{{post.title}}"
+            document.getElementById("edit_story").value = `
+                {{post.story|safe}}
+            `
+            document.getElementById("edit_category").value = "{{post.category_id}}"
+        </script>
     </main>
 </body>
 </html>

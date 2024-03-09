@@ -18,7 +18,7 @@
             {% endfor %}
             <section class="col-8 p-4 d-flex flex-column gap-2">
                 {% if posts %}
-                {% for post in posts %}
+                {% for post in posts.items %}
                 <div class="card">
                     <div class="card-header">
                         {{ post.title }}
@@ -36,6 +36,15 @@
                 {% else %}
                 <p>No Post Were Created Yet</p>
                 {% endif %}
+                <section class="d-flex flex-row gap-1">
+                    {% for page in posts.iter_pages() %}
+                        {% if page %}
+                            <a class="btn btn-outline-primary mb-4" href="{{url_for('main.index' , page=page)}}">{{page}}</a>
+                        {% else %}
+                            ...
+                        {% endif %}
+                    {% endfor %}
+                </section>
             </section>
             <section class="col-4">
                 <h2>Content Requirements:</h2>

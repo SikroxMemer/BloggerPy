@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for , flash
+from flask import Blueprint, render_template, redirect, url_for , flash , request
 from app.extenstions import login_manager, bcrypt, db
 from app.models import (User, Post, Category)
 from app.forms import (LoginForm, ReiterationForm, PostForm , EditForm)
@@ -16,7 +16,8 @@ def load_user(user_id):
 @routes.route('/')
 @login_required
 def index():
-    posts = Post.query.all()
+    page = request.args.get('page' , 1 , type=int)
+    posts = Post.query.paginate(page=page , per_page=3)
     return render_template('Home.html', posts=posts)
 
 
@@ -59,6 +60,7 @@ def register():
 
 
 @routes.route('/post/create', methods=['GET', 'POST'])
+@login_required
 def create():
     categories = Category.query.all()
     choices: list[tuple] = []
@@ -82,12 +84,14 @@ def create():
 
 
 @routes.route('/post/view/id=<int:id>' , methods=['POST' , 'GET'])
+@login_required
 def view(id):
     post = Post.query.filter_by(id=id).first()
     return render_template('Post.html', post=post)
 
 
 @routes.route('/post/delete/id=<int:id>' , methods=['GET' , 'POST'])
+@login_required
 def delete(id):
     post = Post.query.filter_by(id=id).first()
     db.session.delete(post)
@@ -106,12 +110,10 @@ def edit(id):
     post = Post.query.filter_by(id=id).first()
     form = EditForm()
 
-    form.edit_title.data = post.title
-    form.edit_story.data = post.story
     form.edit_category.choices = choices
-    form.edit_category.default = post.category_id
 
     if form.validate_on_submit():
+
         post.title = form.edit_title.data
         post.story = form.edit_story.data
         post.category_id = form.edit_category.data
@@ -122,3 +124,9 @@ def edit(id):
         ...
 
     return render_template('Edit.html', post=post , form=form)
+
+
+@routes.route('/post/reply/id=<int:id>' , methods=['GET' , 'POST'])
+def reply(id):
+    post = Post.query.filter_by(id=id).first()
+    return render_template('Reply.html', post=post)
