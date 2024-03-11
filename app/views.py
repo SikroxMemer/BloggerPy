@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for , flash , request
 from app.extenstions import login_manager, bcrypt, db
-from app.models import (User, Post, Category)
-from app.forms import (LoginForm, ReiterationForm, PostForm , EditForm)
+from app.models import (User, Post, Category , Comment)
+from app.forms import (LoginForm, ReiterationForm, PostForm , EditForm , ReplyForm)
 from app import (login_required, logout_user, login_user , current_user)
 
 
@@ -94,12 +94,13 @@ def create():
 @login_required
 def view(id):
     post = Post.query.filter_by(id=id).first()
-    return render_template('Post.html', post=post)
+    replies = Comment.query.filter_by(post=post)
+    return render_template('Post.html', post=post , replies=replies)
 
 
 @routes.route('/post/delete/id=<int:id>' , methods=['GET' , 'POST'])
 @login_required
-def delete(id):
+def post_delete(id):
     post = Post.query.filter_by(id=id).first()
     db.session.delete(post)
     db.session.commit()
@@ -107,7 +108,7 @@ def delete(id):
     return redirect(url_for('main.index'))
 
 @routes.route('/post/edit/id=<int:id>' , methods=['GET' , 'POST'])
-def edit(id):
+def post_edit(id):
     categories = Category.query.all()
     choices: list[tuple] = []
 
@@ -135,5 +136,29 @@ def edit(id):
 
 @routes.route('/post/reply/id=<int:id>' , methods=['GET' , 'POST'])
 def reply(id):
+    form = ReplyForm()
     post = Post.query.filter_by(id=id).first()
-    return render_template('Reply.html', post=post)
+
+    if form.validate_on_submit():
+        story = form.story.data
+        reply = Comment()
+
+        reply.comment_owner = post.post_owner
+        reply.comment = story
+        reply.post = post
+
+        db.session.add(reply)
+        db.session.commit()
+
+        return redirect(url_for('main.view' , id=id))
+
+    return render_template('Reply.html', post=post , form=form)
+
+
+@routes.route('/reply/delete/id=<int:id>' , methods=['GET' , 'POST'])
+def reply_delete(id):
+    reply = Comment.query.filter_by(id=id).first()
+    db.session.delete(reply)
+    db.session.commit()
+    flash('Reply Deleted' , 'message')
+    return redirect(url_for('main.index'))

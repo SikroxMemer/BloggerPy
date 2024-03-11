@@ -56,7 +56,8 @@ class PostForm(FlaskForm):
 
 
 class ReplyForm(FlaskForm):
-    ...
+    story = CKEditorField(validators=[InputRequired()])
+    submit = SubmitField(label='Reply' , render_kw={'class' : 'form-control btn btn-primary'})
 
 
 class EditForm(FlaskForm):

@@ -45,7 +45,7 @@ class Post(db.Model):
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    comment = db.Column(db.String(150), nullable=False)
+    comment = db.Column(db.String(5000), nullable=False)
 
     comment_date = db.Column(db.Date, default=db.func.current_date())
     comment_owner_id = db.Column(db.Integer, db.ForeignKey(

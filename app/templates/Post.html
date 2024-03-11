@@ -9,7 +9,7 @@
 <body>
     {% include 'Navbar.template.html' %}
     <main class="container">
-        <section class="col-12 p-5">
+        <section class="col-12 p-5 d-flex flex-column gap-2">
             {% for message in get_flashed_messages() %}
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ message }}
@@ -29,12 +29,12 @@
                         {{post.story|safe}}
                     </p>
                     {% if post.post_owner.id == current_user.id %}
-                        <a href="/post/delete/id={{post.id}}" class="btn btn-danger">
-                            Delete
-                        </a>
-                        <a href="/post/edit/id={{post.id}}" class="btn btn-warning">
-                            Modify
-                        </a>
+                    <a href="/post/delete/id={{post.id}}" class="btn btn-danger">
+                        Delete
+                    </a>
+                    <a href="/post/edit/id={{post.id}}" class="btn btn-warning">
+                        Modify
+                    </a>
                     {% endif %}
                     <a href="/post/reply/id={{post.id}}" class="btn btn-info">Reply</a>
                 </div>
@@ -42,6 +42,22 @@
                     {{post.post_date}}
                 </div>
             </div>
+            {% for reply in replies %}
+            <div class="card">
+                <div class="card-header">
+                    Reply From {{ reply.comment_owner.username }}
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ reply.comment|safe }}</p>
+                    {% if reply.comment_owner_id == current_user.id %}
+                        <a href="/reply/delete/id={{reply.id}}" class="btn btn-danger">Delete</a>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    {{reply.comment_date}}
+                </div>
+            </div>
+            {% endfor %}
         </section>
     </main>
 </body>

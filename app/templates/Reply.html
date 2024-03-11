@@ -4,7 +4,7 @@
 <head>
     {% include 'Base.template.html' %}
     {{ ckeditor.load() }}
-    <title>Create Post</title>
+    <title>Create Reply</title>
 </head>
 
 <body>
@@ -15,10 +15,11 @@
                 <form action="" class="d-flex flex-column gap-2" method="POST">
                     <h1>Reply to post #{{post.id}}</h1>
                     {{ form.hidden_tag() }}
-                    {{ form.title }}
                     {{ form.story }}
-                    {{ form.category }}
                     {{ form.submit }}
+                    {% if form.errors  %}
+                        {{ form.errors }}
+                    {% endif %}
                 </form>
             </div>
         </section>
