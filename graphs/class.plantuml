@@ -1,0 +1,54 @@
+@startuml CLASS
+' left to right direction
+' skinparam linetype ortho
+
+' Define entities
+
+
+class Admin {
+    ---
+    
+}
+
+class User {
+    + id: Integer
+    + username: String
+    + password: String
+    + profile_picture: String
+    + email: String
+    + about: String
+    ---
+    createPost() : void
+    createReply() : void
+    modifyPost(Integer id) : void
+    deletePost(Integer id) : void
+}
+
+class Category {
+    + id: Integer
+    + title: String
+}
+
+class Post {
+    + id: Integer
+    + title: String
+    + story: String
+    + post_date: Date
+}
+
+class Comment {
+    + id: Integer
+    + comment: String
+    + comment_date: Date
+}
+
+User <|-- Admin
+
+' Relationships
+User "1" -- "n" Post : owns
+Post "1" -- "n" Comment : has
+Category "1" -- "n" Post : contains
+Admin "1" -- "n" Category : create
+
+
+@enduml

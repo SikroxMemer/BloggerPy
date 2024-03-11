@@ -162,3 +162,9 @@ def reply_delete(id):
     db.session.commit()
     flash('Reply Deleted' , 'message')
     return redirect(url_for('main.index'))
+
+
+@routes.route('/profile/view/id=<int:id>'  , methods=['GET' , 'POST'])
+def profile(id):
+    user = User.query.filter_by(id=id).first()
+    return render_template('Profile.html' , user=user)

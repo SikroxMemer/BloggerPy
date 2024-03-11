@@ -1,0 +1,46 @@
+@startuml
+skinparam linetype ortho
+left to right direction
+' Define entities
+entity "Admin" {
+    + id: Integer
+    + username: String
+    + password: String
+}
+
+entity "User" {
+    + id: Integer
+    + username: String
+    + password: String
+    + profile_picture: String
+    + email: String
+    + about: String
+}
+entity "Category" {
+    + id: Integer
+    + title: String
+}
+
+entity "Post" {
+    + id: Integer
+    + title: String
+    + story: String
+    + post_date: Date
+}
+
+entity "Comment" {
+    + id: Integer
+    + comment: String
+    + comment_date: Date
+}
+
+' Relationships
+User --{ Post : "Owns"
+Post }--{ Comment : "Has"
+Category --{ Post : "Contains"
+
+Admin --{ Post : "Monitor"
+Admin --{ Category : "Alter"
+Admin --{ Comment : "Monitor"
+
+@enduml

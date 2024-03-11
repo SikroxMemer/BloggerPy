@@ -1,0 +1,13 @@
+@startuml Sequence
+
+' Sequence Diagram
+actor User
+participant "Web Server" as Server
+participant "Database" as DB
+
+User -> Server: Request to view posts
+Server -> DB: Query posts
+DB --> Server: Send posts data
+Server --> User: Render posts
+
+@enduml

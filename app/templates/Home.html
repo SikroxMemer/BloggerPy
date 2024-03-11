@@ -24,7 +24,9 @@
                         {{ post.title }}
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title">{{post.post_owner.username}}</h5>
+                        <h5 class="card-title"><a href="/profile/view/id={{post.post_owner.id}}">
+                            {{post.post_owner.username}}
+                        </a></h5>
                         <p class="card-text">{{post.category.title}}</p>
                         <a href="/post/view/id={{post.id}}" class="btn btn-primary">View</a>
                     </div>
