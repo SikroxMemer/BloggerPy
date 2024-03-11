@@ -38,11 +38,9 @@
                 {% endif %}
                 <section class="d-flex flex-row gap-1">
                     {% for page in posts.iter_pages() %}
-                        {% if page %}
-                            <a class="btn btn-outline-primary mb-4" href="{{url_for('main.index' , page=page)}}">{{page}}</a>
-                        {% else %}
-                            ...
-                        {% endif %}
+                    {% if page %}
+                    <a class="btn btn-outline-primary mb-4" href="{{url_for('main.index' , page=page)}}">{{page}}</a>
+                    {% endif %}
                     {% endfor %}
                 </section>
             </section>

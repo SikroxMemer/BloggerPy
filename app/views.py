@@ -13,15 +13,19 @@ def load_user(user_id):
     try:
         return User.query.get(user_id)
     except:
-        return None
+        return redirect(url_for('main.login'))
 
 
 @routes.route('/')
-@login_required
 def index():
-    page = request.args.get('page' , 1 , type=int)
-    posts = Post.query.paginate(page=page , per_page=3)
-    return render_template('Home.html', posts=posts)
+    if current_user.is_authenticated:
+        page = request.args.get('page' , 1 , type=int)
+        posts = Post.query.paginate(page=page , per_page=3)
+        return render_template('Home.html', posts=posts)
+    else:
+        return redirect(url_for('main.login'))
+
+    
 
 
 @routes.route('/logout', methods=['POST', 'GET'])
