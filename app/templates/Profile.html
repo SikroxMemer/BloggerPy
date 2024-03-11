@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'Base.template.html'   %}
+    <title>Profile</title>
+</head>
+
+<body>
+    {% include 'Navbar.template.html'   %}
+    <section class="col-12 p-5">
+        <div class="card">
+            <div class="card-header">
+                <h1>Profile</h1>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">This Is <u>{{ user.username }}</u></h5>
+                <p class="card-text">
+                    {{user.about|safe}}
+                </p>
+                {% if user.id == current_user.id %}
+                    <a href="{{url_for('main.profile_edit')}}" class="btn btn-info">Modify</a>
+                {% endif %}
+            </div>
+            <div class="card-footer text-body-secondary">
+                <i>User ID : {{user.id}}</i>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

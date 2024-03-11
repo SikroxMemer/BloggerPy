@@ -1,12 +1,17 @@
-from flask import Blueprint, render_template, redirect, url_for , flash , request
-from app.extenstions import login_manager, bcrypt, db
+from flask import (Blueprint, render_template, redirect, url_for , flash , request)
+from app.extenstions import (login_manager, bcrypt, db)
 from app.models import (User, Post, Category , Comment)
-from app.forms import (LoginForm, ReiterationForm, PostForm , EditForm , ReplyForm)
+from app.forms import (LoginForm, ReiterationForm, PostForm , EditForm , ReplyForm , ProfileForm)
+from app.settings import (UPLOAD_FOLDER)
 from app import (login_required, logout_user, login_user , current_user)
-
+from os import (path , mkdir)
+from werkzeug.utils import (secure_filename)
 
 routes = Blueprint('main', __name__, template_folder='templates')
 
+def secureFilename(filename:str):
+    __DIR__ = path.join(path.abspath(path.dirname(__file__)) , UPLOAD_FOLDER , secure_filename(filename=filename))
+    return __DIR__
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -108,6 +113,7 @@ def post_delete(id):
     return redirect(url_for('main.index'))
 
 @routes.route('/post/edit/id=<int:id>' , methods=['GET' , 'POST'])
+@login_required
 def post_edit(id):
     categories = Category.query.all()
     choices: list[tuple] = []
@@ -135,6 +141,7 @@ def post_edit(id):
 
 
 @routes.route('/post/reply/id=<int:id>' , methods=['GET' , 'POST'])
+@login_required
 def reply(id):
     form = ReplyForm()
     post = Post.query.filter_by(id=id).first()
@@ -156,6 +163,7 @@ def reply(id):
 
 
 @routes.route('/reply/delete/id=<int:id>' , methods=['GET' , 'POST'])
+@login_required
 def reply_delete(id):
     reply = Comment.query.filter_by(id=id).first()
     db.session.delete(reply)
@@ -163,8 +171,33 @@ def reply_delete(id):
     flash('Reply Deleted' , 'message')
     return redirect(url_for('main.index'))
 
-
 @routes.route('/profile/view/id=<int:id>'  , methods=['GET' , 'POST'])
+@login_required
 def profile(id):
     user = User.query.filter_by(id=id).first()
+
+    if not user:
+        flash('No User with the ID : {} Found !'.format(id) , 'error')
+        return redirect(url_for('main.index'))
+
     return render_template('Profile.html' , user=user)
+
+
+@routes.route('/profile/edit' , methods=['GET' , 'POST'])
+@login_required
+def profile_edit():
+    form = ProfileForm()
+    user = User.query.filter_by(id=current_user.id).first()
+    if form.validate_on_submit():
+        file = form.profile_picture.data
+        try:
+            if file.filename:
+                file.save(secureFilename(file.filename))
+        except OSError as error:
+            mkdir('/static/files')
+        user.profile_picture = file.filename
+        user.about = form.about.data
+        db.session.commit()
+        flash("Profile Have Been Updated" , "message")
+        return redirect(url_for('main.profile' , id=current_user.id))
+    return render_template('ProfileEdit.html' , form=form , user=user)

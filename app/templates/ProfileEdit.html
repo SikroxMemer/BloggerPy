@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'Base.template.html' %}
+    {{ ckeditor.load() }}
+    <title>Profile</title>
+</head>
+
+<body>
+    {% include 'Navbar.template.html' %}
+    <section class="col-12 p-5">
+        <div class="card">
+            <div class="card-header">
+                <h1>Edit Profile</h1>
+            </div>
+            <div class="card-body">
+                <form action="" class="d-flex flex-column gap-2" method="POST" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    {{ form.username(value=user.username) }}
+                    {{ form.email(value=user.email) }}
+                    {{ form.about }}
+                    {{ form.profile_picture }}
+                    {{ form.submit }}
+                </form>
+            </div>
+            <script>
+                document.getElementById('about').value = `
+                {{user.about|safe}}
+                `
+            </script>
+    </section>
+</body>
+
+</html>

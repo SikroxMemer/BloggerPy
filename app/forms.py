@@ -1,4 +1,4 @@
-from wtforms import SelectField, StringField, SubmitField, PasswordField, FileField
+from wtforms import SelectField, StringField, SubmitField, PasswordField, FileField , EmailField
 from wtforms.validators import InputRequired, Length, ValidationError, Optional
 from flask_ckeditor import CKEditorField
 from flask_wtf import FlaskForm
@@ -10,7 +10,7 @@ class ReiterationForm(FlaskForm):
         min=4, max=70)], render_kw={"placeholder": "Username", "class": "form-control"})
     password = PasswordField(validators=[InputRequired(), Length(
         min=7, max=20)], render_kw={"placeholder": "Password", "class": "form-control"})
-    email = StringField(validators=[InputRequired(), Length(
+    email = EmailField(validators=[InputRequired(), Length(
         min=6, max=70)], render_kw={"placeholder": "Email", "class": "form-control"})
 
     submit = SubmitField("Register", render_kw={
@@ -28,7 +28,7 @@ class ReiterationForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
-    email = StringField(validators=[InputRequired(), Length(min=4, max=70)], render_kw={
+    email = EmailField(validators=[InputRequired(), Length(min=4, max=70)], render_kw={
         "placeholder": "Email", "class": "form-control"})
 
     password = PasswordField(validators=[InputRequired(), Length(
@@ -68,9 +68,8 @@ class EditForm(FlaskForm):
 
 
 class ProfileForm(FlaskForm):
-    username = StringField(
-        render_kw={"placeholder": "Username", 'disabled': True, 'class': "form-control"})
-    email = StringField(render_kw={"placeholder": "Email", 'disabled': True})
-    profile_picture = FileField('File', validators=[Optional()])
+    username = StringField(render_kw={"placeholder": "Username", 'disabled': True, 'class': "form-control"})
+    email = EmailField(render_kw={"placeholder": "Email", 'disabled': True  , 'class' : 'form-control'})
+    profile_picture = FileField('File', validators=[Optional()] , render_kw={'class' : 'form-control'})
     about = CKEditorField()
-    submit = SubmitField("Modifier")
+    submit = SubmitField("Modifier" , render_kw={'class' : 'btn btn-primary'})
