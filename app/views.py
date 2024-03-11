@@ -10,7 +10,10 @@ routes = Blueprint('main', __name__, template_folder='templates')
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    try:
+        return User.query.get(user_id)
+    except:
+        return None
 
 
 @routes.route('/')
