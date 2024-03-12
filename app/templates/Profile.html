@@ -2,26 +2,39 @@
 <html lang="en">
 
 <head>
-    {% include 'Base.template.html'   %}
+    {% include 'Base.template.html' %}
     <title>Profile</title>
 </head>
 
 <body>
-    {% include 'Navbar.template.html'   %}
+    {% include 'Navbar.template.html' %}
     <section class="col-12 p-5">
         <div class="card">
+
             <div class="card-header">
                 <h1>Profile</h1>
             </div>
-            <div class="card-body">
-                <h5 class="card-title">This Is <u>{{ user.username }}</u></h5>
-                <p class="card-text">
-                    {{user.about|safe}}
-                </p>
+
+            <div class="card-body d-flex flex-column gap-2">
+                <section class="d-flex flex-row gap-2">
+                  
+                        <img class="img-fluid rounded"
+                            width="25%"
+                            src="{{url_for('static' , filename='files/{}'.format(user.profile_picture))}}" alt="" />
+                
+                    <div>
+                        <h5 class="card-title">This Is <u>{{ user.username }}</u></h5>
+                        <p class="card-text">
+                            {{user.about|safe}}
+                    
+                        </p>
+                    </div>
+                </section>
                 {% if user.id == current_user.id %}
                     <a href="{{url_for('main.profile_edit')}}" class="btn btn-info">Modify</a>
-                {% endif %}
+                {% endif %} 
             </div>
+            
             <div class="card-footer text-body-secondary">
                 <i>User ID : {{user.id}}</i>
             </div>
