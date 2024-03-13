@@ -5,10 +5,15 @@
     {% include 'Base.template.html' %}
     <title>Profile</title>
 </head>
-
+<style>
+    .profile {
+        width:75px;
+        height:75px;
+    }
+</style>
 <body>
     {% include 'Navbar.template.html' %}
-    <section class="col-12 p-5">
+    <section class="col-lg-12 col-md-12 col-sm-12 p-5">
         <div class="card">
 
             <div class="card-header">
@@ -18,8 +23,8 @@
             <div class="card-body d-flex flex-column gap-2">
                 <section class="d-flex flex-row gap-2">
                   
-                        <img class="img-fluid rounded"
-                            width="25%"
+                        <img class="img-fluid rounded profile"
+                           
                             src="{{url_for('static' , filename='files/{}'.format(user.profile_picture))}}" alt="" />
                 
                     <div>

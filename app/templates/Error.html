@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'Base.template.html' %}
+    <title>Error</title>
+</head>
+
+<body class="m-2">
+    <h1 class="text-center">Unauthorized Access</h1>
+    <div class="alert alert-danger p-5">
+        <strong>Warning:</strong> You Trying To Access A Page That Is Not Allowed For Guests
+        Consider Login First Here <a href="{{url_for('main.login')}}" class="link link-secondary">Login</a>
+    </div>
+</body>
+
+</html>

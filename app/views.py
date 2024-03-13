@@ -64,7 +64,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        flash("Your account has been created!", "message")
+        flash("Your account has been created!", "success")
 
         return redirect(url_for('main.login'))
 
@@ -74,130 +74,149 @@ def register():
 @routes.route('/post/create', methods=['GET', 'POST'])
 @login_required
 def create():
-    categories = Category.query.all()
-    choices: list[tuple] = []
-    for choice in categories:
-        choices.append((choice.id, choice.title))
-    form = PostForm()
-    form.category.choices = choices
-    if form.validate_on_submit():
-        post = Post()
-        post.title = form.title.data
-        post.story = form.story.data
-        post.category_id = form.category.data
-        post.post_owner = User.query.filter_by(id=current_user.id).first()
-        db.session.add(post)
-        db.session.commit()
+    if current_user.is_authenticated:
+        categories = Category.query.all()
+        choices: list[tuple] = []
+        for choice in categories:
+            choices.append((choice.id, choice.title))
+        form = PostForm()
+        form.category.choices = choices
+        if form.validate_on_submit():
+            post = Post()
+            post.title = form.title.data
+            post.story = form.story.data
+            post.category_id = form.category.data
+            post.post_owner = User.query.filter_by(id=current_user.id).first()
+            db.session.add(post)
+            db.session.commit()
 
-        flash("Your post has been created!", "message")
+            flash("Your post has been created!", "success")
 
-        return redirect(url_for('main.index'))
-    return render_template('Create.html', form=form)
+            return redirect(url_for('main.index'))
+        return render_template('Create.html', form=form)
+    else:
+        return redirect(url_for('main.login'))
 
 
 @routes.route('/post/view/id=<int:id>' , methods=['POST' , 'GET'])
 @login_required
 def view(id):
-    post = Post.query.filter_by(id=id).first()
-    replies = Comment.query.filter_by(post=post)
-    return render_template('Post.html', post=post , replies=replies)
+    if current_user.is_authenticated:
+        post = Post.query.filter_by(id=id).first()
+        replies = Comment.query.filter_by(post=post)
+        return render_template('Post.html', post=post , replies=replies)
+    else:
+        return redirect(url_for('main.login'))
 
 
 @routes.route('/post/delete/id=<int:id>' , methods=['GET' , 'POST'])
 @login_required
 def post_delete(id):
-    post = Post.query.filter_by(id=id).first()
-    db.session.delete(post)
-    db.session.commit()
-    flash('Your post has been deleted', 'message')
-    return redirect(url_for('main.index'))
+    if current_user.is_authenticated:
+        post = Post.query.filter_by(id=id).first()
+        db.session.delete(post)
+        db.session.commit()
+        flash('Your post has been deleted', 'warning')
+        return redirect(url_for('main.index'))
+    else:
+        return redirect(url_for('main.login'))
+
 
 @routes.route('/post/edit/id=<int:id>' , methods=['GET' , 'POST'])
 @login_required
 def post_edit(id):
-    categories = Category.query.all()
-    choices: list[tuple] = []
-
-    for choice in categories:
-        choices.append((choice.id, choice.title))
-
-    post = Post.query.filter_by(id=id).first()
-    form = EditForm()
-
-    form.edit_category.choices = choices
-
-    if form.validate_on_submit():
-
-        post.title = form.edit_title.data
-        post.story = form.edit_story.data
-        post.category_id = form.edit_category.data
-
-        db.session.commit()
-        flash('Your post has been edited', 'message')
-        return redirect(url_for('main.view', id=id))
-        ...
-
-    return render_template('Edit.html', post=post , form=form)
-
+    if current_user.is_authenticated:
+        categories = Category.query.all()
+        choices: list[tuple] = []
+        for choice in categories:
+            choices.append((choice.id, choice.title))
+        post = Post.query.filter_by(id=id).first()
+        form = EditForm()
+        form.edit_category.choices = choices
+        if form.validate_on_submit():
+            post.title = form.edit_title.data
+            post.story = form.edit_story.data
+            post.category_id = form.edit_category.data
+            db.session.commit()
+            flash('Your post has been edited', 'info')
+            return redirect(url_for('main.view', id=id))
+            ...
+        return render_template('Edit.html', post=post , form=form)
+    else:
+       return redirect(url_for('main.login'))
 
 @routes.route('/post/reply/id=<int:id>' , methods=['GET' , 'POST'])
 @login_required
 def reply(id):
-    form = ReplyForm()
-    post = Post.query.filter_by(id=id).first()
+    if current_user.is_authenticated:
+        form = ReplyForm()
+        post = Post.query.filter_by(id=id).first()
 
-    if form.validate_on_submit():
-        story = form.story.data
-        reply = Comment()
+        if form.validate_on_submit():
+            story = form.story.data
+            reply = Comment()
 
-        reply.comment_owner = post.post_owner
-        reply.comment = story
-        reply.post = post
+            reply.comment_owner = post.post_owner
+            reply.comment = story
+            reply.post = post
 
-        db.session.add(reply)
-        db.session.commit()
+            db.session.add(reply)
+            db.session.commit()
 
-        return redirect(url_for('main.view' , id=id))
+            return redirect(url_for('main.view' , id=id))
 
-    return render_template('Reply.html', post=post , form=form)
+        return render_template('Reply.html', post=post , form=form)
+    else:
+        return redirect(url_for('main.login'))
 
 
 @routes.route('/reply/delete/id=<int:id>' , methods=['GET' , 'POST'])
 @login_required
 def reply_delete(id):
-    reply = Comment.query.filter_by(id=id).first()
-    db.session.delete(reply)
-    db.session.commit()
-    flash('Reply Deleted' , 'message')
-    return redirect(url_for('main.index'))
+    if current_user.is_authenticated:
+        reply = Comment.query.filter_by(id=id).first()
+        db.session.delete(reply)
+        db.session.commit()
+        flash('Reply Deleted' , 'info')
+        return redirect(url_for('main.index'))
+    else:
+        return redirect(url_for('main.login'))
 
 @routes.route('/profile/view/id=<int:id>'  , methods=['GET' , 'POST'])
 @login_required
 def profile(id):
-    user = User.query.filter_by(id=id).first()
-
-    if not user:
-        flash('No User with the ID : {} Found !'.format(id) , 'error')
-        return redirect(url_for('main.index'))
-
-    return render_template('Profile.html' , user=user)
+    if current_user.is_authenticated:
+        user = User.query.filter_by(id=id).first()
+        if not user:
+            flash('No User with the ID : {} Found !'.format(id) , 'danger')
+            return redirect(url_for('main.index'))
+        return render_template('Profile.html' , user=user)
+    else:
+        return redirect(url_for('main.login'))
 
 
 @routes.route('/profile/edit' , methods=['GET' , 'POST'])
 @login_required
 def profile_edit():
-    form = ProfileForm()
-    user = User.query.filter_by(id=current_user.id).first()
-    if form.validate_on_submit():
-        file = form.profile_picture.data
-        try:
-            if file.filename:
-                file.save(secureFilename(file.filename))
-        except OSError as error:
-            mkdir('/static/files')
-        user.profile_picture = file.filename
-        user.about = form.about.data
-        db.session.commit()
-        flash("Profile Have Been Updated" , "message")
-        return redirect(url_for('main.profile' , id=current_user.id))
-    return render_template('ProfileEdit.html' , form=form , user=user)
+    if current_user.is_authenticaed:
+        form = ProfileForm()
+        user = User.query.filter_by(id=current_user.id).first()
+        if form.validate_on_submit():
+            file = form.profile_picture.data
+            try:
+                if file.filename:
+                    file.save(secureFilename(file.filename))
+            except OSError as error:
+                mkdir('/static/files')
+            user.profile_picture = file.filename
+            user.about = form.about.data
+            db.session.commit()
+            flash("Profile Have Been Updated" , "message")
+            return redirect(url_for('main.profile' , id=current_user.id))
+        return render_template('ProfileEdit.html' , form=form , user=user)
+    else:
+        return redirect(url_for('main.login'))
+    
+@routes.errorhandler(401)
+def error(error):
+    return render_template('Error.html')

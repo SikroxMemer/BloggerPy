@@ -5,84 +5,112 @@
     {% include 'Base.template.html' %}
     <title>Home Page</title>
 </head>
+<style>
+    .profile {
+        width: 75px;
+        height: 75px;
+        margin:7px;
+    }
+</style>
 
 <body>
     {% include 'Navbar.template.html' %}
     <main class="container">
-        <section class="row p-2">
+        <section class="row m-2">
 
-            {% for message in get_flashed_messages() %}
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+            {% for category , message in messages %}
+            <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
             {% endfor %}
 
-            <section class="col-lg-8 col-md-12 col-sm-12 p-4 d-flex flex-column gap-2">
+            {% endif %}
+            {% endwith %}
+
+            <article class="col-lg-8 col-md-12 col-sm-12 p-2 d-flex flex-column gap-2">
                 {% if posts %}
                 {% for post in posts.items %}
-                <div class="card">
-                    <div class="card-header">
-                        <b>{{ post.title }}</b>
-                    </div>
+                <div class="card d-flex flex-row">
+
+                    <img class="img-fluid rounded-circle profile"
+                        src="{{url_for('static' , filename='files/{}'.format(post.post_owner.profile_picture))}}" alt="" />
+
                     <section class="d-flex flex-row ">
-                        <img 
-                            class="rounded m-2"
-                  
-                            src="{{url_for('static' , filename='files/{}'.format(post.post_owner.profile_picture))}}" 
-                            alt=""
-                        />
                         <div class="card-body">
-                            <h5 class="card-title"><a href="/profile/view/id={{post.post_owner.id}}">
-                                {{post.post_owner.username}}
-                            </a></h5>
-                            <p class="card-text">{{post.category.title}}</p>
-                            <a href="/post/view/id={{post.id}}" class="btn btn-primary">View</a>
+                            <p class="card-title">
+                                <a href="/profile/view/id={{post.post_owner.id}}">{{post.post_owner.username}}</a>
+                                <span>{{post.post_date}}</span>
+                            </p>
+                            <hr />
+                            <p class="card-text"><b>
+                                    <h5>{{ post.title }}</h5>
+                                </b></p>
+                            <a href="/post/view/id={{post.id}}" class="link link-primary">View</a>
                         </div>
                     </section>
-                    <div class="card-footer">
-                        {{post.post_date}}
-                    </div>
                 </div>
                 {% endfor %}
                 {% else %}
                 <p>No Post Were Created Yet</p>
                 {% endif %}
                 <section class="d-flex flex-row gap-1">
-                    {% for page in posts.iter_pages() %}
+
+                    <!-- PAGINATION -->
+                    {% for page in posts.iter_pages(left_edge=1,right_edge=1,left_current=1,right_current=2) %}
                     {% if page %}
+                    {% if posts.page == page %}
+                    <a class="btn btn-primary mb-4" href="{{url_for('main.index' , page=page)}}">{{page}}</a>
+                    {% else %}
                     <a class="btn btn-outline-primary mb-4" href="{{url_for('main.index' , page=page)}}">{{page}}</a>
                     {% endif %}
+                    {% else %}
+                    ...
+                    {% endif %}
                     {% endfor %}
+
                 </section>
-            </section>
-            <section class="col-lg-4">
-                <h2>Content Requirements:</h2>
-                <ul>
-                    <li>Originality: We encourage original content that reflects your unique perspective and voice.
+            </article>
+
+            <section class="col-lg-4 col-md-12 col-sm-12 d-flex flex-column gap-2">
+
+                <ul class="list-group">
+                    <h2 class="list-group-item active">Content Requirements</h2>
+                    <li class="list-group-item">Originality: We encourage original content that reflects your unique
+                        perspective and voice.
                     </li>
-                    <li>Accuracy: Ensure the information you share is factual and well-sourced, especially regarding
+                    <li class="list-group-item">Accuracy: Ensure the information you share is factual and well-sourced,
+                        especially regarding
                         sensitive topics.</li>
-                    <li>Respect: Be mindful of cultural differences and avoid language that is offensive,
+                    <li class="list-group-item">Respect: Be mindful of cultural differences and avoid language that is
+                        offensive,
                         discriminatory, or hateful.</li>
-                    <li>Relevance: Content should be related to the chosen topic and avoid irrelevant or off-topic
+                    <li class="list-group-item">Relevance: Content should be related to the chosen topic and avoid
+                        irrelevant or off-topic
                         information.</li>
-                    <li>Transparency: If using external sources, please properly cite them to avoid plagiarism.</li>
+                    <li class="list-group-item">Transparency: If using external sources, please properly cite them to
+                        avoid plagiarism.</li>
                 </ul>
-                <h2>Prohibited Content:</h2>
-                <ul>
-                    <li>Hate speech, discrimination, or incitement to violence.</li>
-                    <li>Personal attacks, insults, or harassment.</li>
-                    <li>Spam, irrelevant self-promotion, or commercial content.</li>
-                    <li>Copyrighted material without proper permission.</li>
-                    <li>Content that is illegal, harmful, or misleading.</li>
+
+                <ul class="list-group">
+                    <h2 class="list-group-item active">Prohibited Content:</h2>
+                    <li class="list-group-item">Hate speech, discrimination, or incitement to violence.</li>
+                    <li class="list-group-item">Personal attacks, insults, or harassment.</li>
+                    <li class="list-group-item">Spam, irrelevant self-promotion, or commercial content.</li>
+                    <li class="list-group-item">Copyrighted material without proper permission.</li>
+                    <li class="list-group-item">Content that is illegal, harmful, or misleading.</li>
                 </ul>
-                <p>By following these guidelines, you contribute to creating a valuable resource for global audiences.
+                <q>
+                    By following these guidelines, you contribute to creating a valuable resource for global audiences.
                     We reserve the right to remove content that violates these policies. If you have any questions,
-                    please feel free to contact us.</p>
+                    please feel free to contact us.
+                </q>
             </section>
         </section>
-        
+
     </main>
 </body>
 

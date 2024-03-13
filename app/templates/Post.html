@@ -5,58 +5,72 @@
     {% include 'Base.template.html' %}
     <title>Post #{{post.id}}</title>
 </head>
-
+<style>
+    .profile {
+        width:75px;
+        height:75px;
+    }
+</style>
 <body>
     {% include 'Navbar.template.html' %}
-    <main class="container">
-        <section class="col-12 p-5 d-flex flex-column gap-2">
-            {% for message in get_flashed_messages() %}
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endfor %}
-            <div class="card">
-                <div class="card-header">
-                    {{ post.title }}
-                </div>
+    <main class="container-fluid">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category , message in messages %}
+                        <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+
+                {% endif %}
+            {% endwith %}
+
+        <section class="col-lg-12 col-sm-12 col-md-12 p-2 d-flex flex-column gap-2">
+            <article class="card">
                 <div class="card-body">
-                    <h5 class="card-title">{{post.post_owner.username}}</h5>
+                    <img class="img-fluid rounded profile"  
+                            src="{{url_for('static' , filename='files/{}'.format(user.profile_picture))}}" alt="" />
+                            
+                    <h5 class="card-title text-center">
+                        {{ post.title }}
+                    </h5>
+                    <hr>
                     <p class="card-text">
-                        {{post.category.title}}
+                        <span><b>Category:</b></span>&nbsp;{{post.category.title}}
                     </p>
+                    
                     <p class="card-text">
                         {{post.story|safe}}
                     </p>
+                   
                     {% if post.post_owner.id == current_user.id %}
-                    <a href="/post/delete/id={{post.id}}" class="btn btn-danger">
-                        Delete
-                    </a>
-                    <a href="/post/edit/id={{post.id}}" class="btn btn-warning">
-                        Modify
-                    </a>
+                    <a href="/post/delete/id={{post.id}}" class="link link-danger">Delete</a>
+                    <a href="/post/edit/id={{post.id}}" class="link link-warning">Modify</a>
                     {% endif %}
-                    <a href="/post/reply/id={{post.id}}" class="btn btn-info">Reply</a>
+                    <a href="/post/reply/id={{post.id}}" class="link link-info">Reply</a>
+                    
                 </div>
-                <div class="card-footer">
-                    {{post.post_date}}
-                </div>
-            </div>
+                <!-- <div>
+                    {{post.post_owner.username}}
+                </div> -->
+            </article>
             {% for reply in replies %}
-            <div class="card">
-                <div class="card-header">
-                    Reply From {{ reply.comment_owner.username }}
-                </div>
+            <article class="card">
                 <div class="card-body">
-                    <p class="card-text">{{ reply.comment|safe }}</p>
+                    <p class="card-title"><a href="{{url_for('main.profile' , id=reply.comment_owner.id)}}">
+                        {{ reply.comment_owner.username }}</a>&nbsp;<span>{{reply.comment_date}}</span>
+                    </p>
+                    <hr>
+                    <p class="card-text">
+                        {{ reply.comment|safe }}
+                    </p>
                     {% if reply.comment_owner_id == current_user.id %}
-                        <a href="/reply/delete/id={{reply.id}}" class="btn btn-danger">Delete</a>
+                        <a href="/reply/delete/id={{reply.id}}" class="link link-danger">Delete</a>
                     {% endif %}
                 </div>
-                <div class="card-footer">
-                    {{reply.comment_date}}
-                </div>
-            </div>
+            </article>
             {% endfor %}
         </section>
     </main>
