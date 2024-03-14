@@ -9,6 +9,7 @@
     .profile {
         width:75px;
         height:75px;
+        margin:15px;
     }
 </style>
 <body>
@@ -18,7 +19,7 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category , message in messages %}
-                        <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+                        <div class="alert alert-{{category}} alert-dismissible fade show m-1" role="alert">
                             {{ message }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
@@ -28,12 +29,18 @@
             {% endwith %}
 
         <section class="col-lg-12 col-sm-12 col-md-12 p-2 d-flex flex-column gap-2">
-            <article class="card">
+            <article class="card d-flex flex-row gap-2 shadow-sm">
+
+                {% if post.post_owner.profile_picture %}
+                <img class="img-fluid rounded-circle profile"
+                    src="{{url_for('static' , filename='files/{}'.format(post.post_owner.profile_picture))}}" alt="" />
+                {% endif %}
+
+
                 <div class="card-body">
-                    <img class="img-fluid rounded profile"  
-                            src="{{url_for('static' , filename='files/{}'.format(user.profile_picture))}}" alt="" />
+                    
                             
-                    <h5 class="card-title text-center">
+                    <h5 class="card-title">
                         {{ post.title }}
                     </h5>
                     <hr>
@@ -45,11 +52,14 @@
                         {{post.story|safe}}
                     </p>
                    
-                    {% if post.post_owner.id == current_user.id %}
-                    <a href="/post/delete/id={{post.id}}" class="link link-danger">Delete</a>
-                    <a href="/post/edit/id={{post.id}}" class="link link-warning">Modify</a>
-                    {% endif %}
-                    <a href="/post/reply/id={{post.id}}" class="link link-info">Reply</a>
+                    <section class="btn-group">
+                        {% if post.post_owner.id == current_user.id %}
+                        <a href="/post/delete/id={{post.id}}" class="btn btn-danger">Delete</a>
+                        <a href="/post/edit/id={{post.id}}" class="btn btn-warning">Modify</a>
+                        {% endif %}
+
+                        <a href="/post/reply/id={{post.id}}" class="btn btn-info">Reply</a>
+                    </section>
                     
                 </div>
                 <!-- <div>
@@ -57,21 +67,44 @@
                 </div> -->
             </article>
             {% for reply in replies %}
-            <article class="card">
-                <div class="card-body">
-                    <p class="card-title"><a href="{{url_for('main.profile' , id=reply.comment_owner.id)}}">
-                        {{ reply.comment_owner.username }}</a>&nbsp;<span>{{reply.comment_date}}</span>
-                    </p>
-                    <hr>
-                    <p class="card-text">
-                        {{ reply.comment|safe }}
-                    </p>
-                    {% if reply.comment_owner_id == current_user.id %}
-                        <a href="/reply/delete/id={{reply.id}}" class="link link-danger">Delete</a>
+            <article class="card shadow-sm">
+                <div class="card-body d-flex flex-row gap-2">
+                    {% if reply.comment_owner.profile_picture %}
+                        <img class="img-fluid rounded-circle profile"
+                            src="{{url_for('static' , filename='files/{}'.format(reply.comment_owner.profile_picture))}}" alt="" />
                     {% endif %}
+                    <section>
+                        <p class="card-title"><a href="{{url_for('main.profile' , id=reply.comment_owner.id)}}">
+                            {{reply.comment_owner.username}}</a>&nbsp;<span>{{reply.comment_date}}</span>
+                        </p>
+                        <hr>
+                        <p class="card-text">
+                            {{ reply.comment|safe }}
+                        </p>
+                        {% if reply.comment_owner_id == current_user.id %}
+                            <a href="/reply/delete/id={{reply.id}}" class="link link-danger">Delete</a>
+                        {% endif %}
+                    </section>
                 </div>
             </article>
+            
             {% endfor %}
+            <section class="d-flex flex-row gap-1 justify-content-center">
+
+                <!-- PAGINATION -->
+                {% for page in replies.iter_pages(left_edge=1,right_edge=1,left_current=1,right_current=2) %}
+                {% if page %}
+                {% if replies.page == page %}
+                <a class="btn btn-primary mb-4" href="{{url_for('main.view' , page=page , id=post.id)}}">{{page}}</a>
+                {% else %}
+                <a class="btn btn-outline-primary mb-4" href="{{url_for('main.view' , page=page , id=post.id)}}">{{page}}</a>
+                {% endif %}
+                {% else %}
+                ...
+                {% endif %}
+                {% endfor %}
+
+            </section>
         </section>
     </main>
 </body>

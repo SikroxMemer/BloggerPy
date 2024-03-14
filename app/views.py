@@ -25,7 +25,7 @@ def load_user(user_id):
 def index():
     if current_user.is_authenticated:
         page = request.args.get('page' , 1 , type=int)
-        posts = Post.query.paginate(page=page , per_page=3)
+        posts = Post.query.paginate(page=page , per_page=5)
         return render_template('Home.html', posts=posts)
     else:
         return redirect(url_for('main.login'))
@@ -102,8 +102,12 @@ def create():
 @login_required
 def view(id):
     if current_user.is_authenticated:
+        page = request.args.get('page' , 1 , type=int)
+
         post = Post.query.filter_by(id=id).first()
-        replies = Comment.query.filter_by(post=post)
+        replies = Comment.query.filter_by(post=post).paginate(page=page , per_page=5)
+
+
         return render_template('Post.html', post=post , replies=replies)
     else:
         return redirect(url_for('main.login'))
@@ -156,12 +160,14 @@ def reply(id):
             story = form.story.data
             reply = Comment()
 
-            reply.comment_owner = post.post_owner
+            reply.comment_owner_id = current_user.id
             reply.comment = story
             reply.post = post
 
             db.session.add(reply)
             db.session.commit()
+
+            flash('Reply Added' , 'success')
 
             return redirect(url_for('main.view' , id=id))
 
@@ -198,7 +204,7 @@ def profile(id):
 @routes.route('/profile/edit' , methods=['GET' , 'POST'])
 @login_required
 def profile_edit():
-    if current_user.is_authenticaed:
+    if current_user.is_authenticated:
         form = ProfileForm()
         user = User.query.filter_by(id=current_user.id).first()
         if form.validate_on_submit():
@@ -206,13 +212,19 @@ def profile_edit():
             try:
                 if file.filename:
                     file.save(secureFilename(file.filename))
+                    user.profile_picture = file.filename
+
             except OSError as error:
                 mkdir('/static/files')
-            user.profile_picture = file.filename
+            except AttributeError as error:
+                user.profile_picture = user.profile_picture
+            
             user.about = form.about.data
+            user.username = form.username.data
             db.session.commit()
-            flash("Profile Have Been Updated" , "message")
+            flash("Profile Have Been Updated" , "success")
             return redirect(url_for('main.profile' , id=current_user.id))
+            
         return render_template('ProfileEdit.html' , form=form , user=user)
     else:
         return redirect(url_for('main.login'))

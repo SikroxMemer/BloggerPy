@@ -1,7 +1,8 @@
-from wtforms import SelectField, StringField, SubmitField, PasswordField, FileField , EmailField
+from wtforms import (SelectField, StringField, SubmitField, PasswordField, FileField , EmailField)
 from wtforms.validators import InputRequired, Length, ValidationError, Optional
 from flask_ckeditor import CKEditorField
 from flask_wtf import FlaskForm
+from flask_wtf.file import (FileField, FileAllowed)
 from .models import Category, Post, User
 
 
@@ -17,10 +18,7 @@ class ReiterationForm(FlaskForm):
                          "class": "btn btn-primary form-control"})
 
     def validate_username(self, username):
-        existing_user = User.query.filter_by(
-            username=username.data
-        ).first()
-
+        existing_user = User.query.filter_by(username=username.data).first()
         if existing_user:
             raise ValidationError(
                 "Username already exists , Please Chose Another One"
@@ -30,30 +28,21 @@ class ReiterationForm(FlaskForm):
 class LoginForm(FlaskForm):
     email = EmailField(validators=[InputRequired(), Length(min=4, max=70)], render_kw={
         "placeholder": "Email", "class": "form-control"})
-
     password = PasswordField(validators=[InputRequired(), Length(
         min=7, max=20)], render_kw={"placeholder": "Password", "class": "form-control"})
-
     submit = SubmitField("Login", render_kw={
                          "class": "btn btn-primary form-control"})
 
 
 class PostForm(FlaskForm):
-
-    
-
     title = StringField(validators=[InputRequired(), Length(
         min=4, max=70)], render_kw={"placeholder": "Title", "class": "form-control"})
-
     story = CKEditorField(validators=[InputRequired(), Length(
         min=4, max=5000)], render_kw={"placeholder": "Story"})
-
     category = SelectField(validators=[InputRequired()], render_kw={
                            "class": "form-control"})
-
     submit = SubmitField("Post", render_kw={
                          "class": "btn btn-primary form-control"})
-
 
 class ReplyForm(FlaskForm):
     story = CKEditorField(validators=[InputRequired()])
@@ -68,8 +57,11 @@ class EditForm(FlaskForm):
 
 
 class ProfileForm(FlaskForm):
-    username = StringField(render_kw={"placeholder": "Username", 'disabled': True, 'class': "form-control"})
+    username = StringField(render_kw={"placeholder": "Username", 'class': "form-control"})
     email = EmailField(render_kw={"placeholder": "Email", 'disabled': True  , 'class' : 'form-control'})
-    profile_picture = FileField('File', validators=[Optional()] , render_kw={'class' : 'form-control'})
+    profile_picture = FileField(
+        'File', validators=[Optional() , FileAllowed(['jpg', 'png'])] , 
+        render_kw={'class' : 'form-control'})
+    
     about = CKEditorField()
     submit = SubmitField("Modifier" , render_kw={'class' : 'btn btn-primary'})

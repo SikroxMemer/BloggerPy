@@ -9,7 +9,7 @@
     .profile {
         width: 75px;
         height: 75px;
-        margin:7px;
+        margin: 15px;
     }
 </style>
 
@@ -34,20 +34,25 @@
             <article class="col-lg-8 col-md-12 col-sm-12 p-2 d-flex flex-column gap-2">
                 {% if posts %}
                 {% for post in posts.items %}
-                <div class="card d-flex flex-row">
+                <div class="card d-flex flex-row shadow-sm">
 
+                    {% if post.post_owner.profile_picture %}
                     <img class="img-fluid rounded-circle profile"
                         src="{{url_for('static' , filename='files/{}'.format(post.post_owner.profile_picture))}}" alt="" />
+                    {% endif %}
 
                     <section class="d-flex flex-row ">
                         <div class="card-body">
-                            <p class="card-title">
+
+                            <h6 class="card-title">
                                 <a href="/profile/view/id={{post.post_owner.id}}">{{post.post_owner.username}}</a>
+                                &nbsp;
                                 <span>{{post.post_date}}</span>
-                            </p>
-                            <hr />
+                            </h6>
+
+                            <hr/>
                             <p class="card-text"><b>
-                                    <h5>{{ post.title }}</h5>
+                                    <h5>{{ post.title}}</h5>
                                 </b></p>
                             <a href="/post/view/id={{post.id}}" class="link link-primary">View</a>
                         </div>
@@ -75,10 +80,10 @@
                 </section>
             </article>
 
-            <section class="col-lg-4 col-md-12 col-sm-12 d-flex flex-column gap-2">
+            <section class="col-lg-4 col-md-12 col-sm-12 d-flex flex-column gap-2 p-2">
 
-                <ul class="list-group">
-                    <h2 class="list-group-item active">Content Requirements</h2>
+                <ul class="list-group shadow-sm"">
+                    <h2 class=" list-group-item active">Content Requirements</h2>
                     <li class="list-group-item">Originality: We encourage original content that reflects your unique
                         perspective and voice.
                     </li>
@@ -95,19 +100,15 @@
                         avoid plagiarism.</li>
                 </ul>
 
-                <ul class="list-group">
-                    <h2 class="list-group-item active">Prohibited Content:</h2>
+                <ul class="list-group shadow-sm"">
+                    <h2 class=" list-group-item active">Prohibited Content:</h2>
                     <li class="list-group-item">Hate speech, discrimination, or incitement to violence.</li>
                     <li class="list-group-item">Personal attacks, insults, or harassment.</li>
                     <li class="list-group-item">Spam, irrelevant self-promotion, or commercial content.</li>
                     <li class="list-group-item">Copyrighted material without proper permission.</li>
                     <li class="list-group-item">Content that is illegal, harmful, or misleading.</li>
                 </ul>
-                <q>
-                    By following these guidelines, you contribute to creating a valuable resource for global audiences.
-                    We reserve the right to remove content that violates these policies. If you have any questions,
-                    please feel free to contact us.
-                </q>
+                
             </section>
         </section>
 

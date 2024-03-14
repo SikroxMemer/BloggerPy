@@ -12,8 +12,22 @@
     }
 </style>
 <body>
+
     {% include 'Navbar.template.html' %}
+
     <section class="col-lg-12 col-md-12 col-sm-12 p-5">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category , message in messages %}
+                <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
         <div class="card">
 
             <div class="card-header">
@@ -22,11 +36,10 @@
 
             <div class="card-body d-flex flex-column gap-2">
                 <section class="d-flex flex-row gap-2">
-                  
-                        <img class="img-fluid rounded profile"
-                           
+                        {% if user.profile_picture %}
+                            <img class="img-fluid rounded-circle profile"
                             src="{{url_for('static' , filename='files/{}'.format(user.profile_picture))}}" alt="" />
-                
+                        {% endif %}
                     <div>
                         <h5 class="card-title">This Is <u>{{ user.username }}</u></h5>
                         <p class="card-text">
