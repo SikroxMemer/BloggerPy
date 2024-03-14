@@ -54,11 +54,11 @@
                    
                     <section class="btn-group">
                         {% if post.post_owner.id == current_user.id %}
-                        <a href="/post/delete/id={{post.id}}" class="btn btn-danger">Delete</a>
-                        <a href="/post/edit/id={{post.id}}" class="btn btn-warning">Modify</a>
+                        <a href="/post/delete/id={{post.id}}" class="btn btn-danger btn-sm">Delete</a>
+                        <a href="/post/edit/id={{post.id}}" class="btn btn-warning btn-sm">Modify</a>
                         {% endif %}
 
-                        <a href="/post/reply/id={{post.id}}" class="btn btn-info">Reply</a>
+                        <a href="/post/reply/id={{post.id}}" class="btn btn-info btn-sm">Reply</a>
                     </section>
                     
                 </div>
@@ -82,7 +82,7 @@
                             {{ reply.comment|safe }}
                         </p>
                         {% if reply.comment_owner_id == current_user.id %}
-                            <a href="/reply/delete/id={{reply.id}}" class="link link-danger">Delete</a>
+                            <a href="/reply/delete/id={{reply.id}}" class="btn btn-danger btn-sm">Delete</a>
                         {% endif %}
                     </section>
                 </div>
@@ -106,6 +106,13 @@
 
             </section>
         </section>
+        <script defer>
+            document.querySelectorAll('.profile').forEach(item => {
+                item.addEventListener('error' , () => {
+                    item.src = "{{url_for('static' , filename='empty.png')}}"
+                })
+            })
+        </script>
     </main>
 </body>
 

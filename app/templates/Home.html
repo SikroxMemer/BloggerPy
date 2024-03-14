@@ -39,6 +39,9 @@
                     {% if post.post_owner.profile_picture %}
                     <img class="img-fluid rounded-circle profile"
                         src="{{url_for('static' , filename='files/{}'.format(post.post_owner.profile_picture))}}" alt="" />
+
+                    {% else %}
+                        <img src="{{url_for('static' , filename='empty.png')}}" />
                     {% endif %}
 
                     <section class="d-flex flex-row ">
@@ -111,7 +114,13 @@
                 
             </section>
         </section>
-
+        <script defer>
+            $(document).ready(function() {
+                $('.profile').on('error' , function() {
+                    $(this).attr("src" , "{{url_for('static' , filename='empty.png')}}");
+                })
+            })
+        </script>
     </main>
 </body>
 

@@ -210,12 +210,16 @@ def profile_edit():
         if form.validate_on_submit():
             file = form.profile_picture.data
             try:
+
                 if file.filename:
                     file.save(secureFilename(file.filename))
                     user.profile_picture = file.filename
 
             except OSError as error:
-                mkdir('/static/files')
+                mkdir(path.join(path.dirname(__file__) , 'static' , 'files'))
+                file.save(secureFilename(file.filename))
+                user.profile_picture = file.filename
+
             except AttributeError as error:
                 user.profile_picture = user.profile_picture
             

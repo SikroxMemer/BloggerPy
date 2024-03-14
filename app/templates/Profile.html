@@ -57,6 +57,13 @@
                 <i>User ID : {{user.id}}</i>
             </div>
         </div>
+        <script defer>
+            document.querySelectorAll('.profile').forEach(item => {
+                item.addEventListener('error' , () => {
+                    item.src = "{{url_for('static' , filename='empty.png')}}"
+                })
+            })
+        </script>
     </section>
 </body>
 
