@@ -1,8 +1,12 @@
 from flask_login import (UserMixin)
-from .extenstions import db
-
+from app.extenstions import db
 
 class User(db.Model, UserMixin):
+    """
+    The User class inherits from db.Model and UserMixin.
+    id, username, password, profile_picture, email, and about are attributes of the User class.
+    The __repr__ method returns a string representation of the user with their ID.
+    """
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(70), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
@@ -15,6 +19,12 @@ class User(db.Model, UserMixin):
 
 
 class Category(db.Model):
+    """
+    The Category class represents a database table for categories.
+    The id method defines an integer column as the primary key.
+    The title method defines a string column with a maximum length of 25 characters and it cannot be null.
+    The __repr__ method returns a string representation of the category object, including its id.
+    """
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(25), nullable=False)
 
@@ -23,6 +33,11 @@ class Category(db.Model):
 
 
 class Post(db.Model):
+    """
+    This class definition represents a Post entity with the following methods:
+    __repr__(self): Returns a string representation of the Post object.
+    It returns a string with the Post ID for debugging and logging purposes.
+    """
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(55), nullable=False)
     story = db.Column(db.String(5000), nullable=False)
@@ -44,6 +59,17 @@ class Post(db.Model):
 
 
 class Comment(db.Model):
+    """
+    This class definition creates a model for a comment in a database.
+    id: Represents the unique identifier of the comment.
+    comment: Represents the actual content of the comment.
+    comment_date: Represents the date the comment was created.
+    comment_owner_id: Represents the foreign key relationship with the user who owns the comment.
+    comment_owner: Represents the relationship with the User model.
+    post_id: Represents the foreign key relationship with the post the comment belongs to.
+    post: Represents the relationship with the Post model.
+    __repr__(self): Returns a string representation of the Comment object.
+    """
     id = db.Column(db.Integer, primary_key=True)
     comment = db.Column(db.String(5000), nullable=False)
 
@@ -61,5 +87,3 @@ class Comment(db.Model):
 
     def __repr__(self) -> str:
         return '<Comment %r>' % self.id
-
-
