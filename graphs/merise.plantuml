@@ -1,13 +1,8 @@
 @startuml
+   
 skinparam linetype ortho
 left to right direction
 ' Define entities
-entity "Admin" {
-    + id: Integer
-    + username: String
-    + password: String
-}
-
 entity "User" {
     + id: Integer
     + username: String
@@ -38,9 +33,5 @@ entity "Comment" {
 User --{ Post : "Owns"
 Post }--{ Comment : "Has"
 Category --{ Post : "Contains"
-
-Admin --{ Post : "Monitor"
-Admin --{ Category : "Alter"
-Admin --{ Comment : "Monitor"
 
 @enduml

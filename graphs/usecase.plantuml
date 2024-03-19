@@ -1,0 +1,20 @@
+@startuml usecase
+left to right direction
+
+:Utilisateur: as User
+
+rectangle SMB (System Of Managing Blog Pages) {
+    (Créer un poste)
+    (Modifier un poste)
+    (Supprimer un poste)
+    (Ajouter un commentaire)
+    (Supprimer un commentaire)
+}
+
+User --> (Créer un poste)
+User --> (Modifier un poste)
+User --> (Supprimer un poste)
+User --> (Ajouter un commentaire)
+User --> (Supprimer un commentaire)
+
+@enduml

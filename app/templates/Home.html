@@ -19,16 +19,14 @@
         <section class="row m-2">
 
             {% with messages = get_flashed_messages(with_categories=true) %}
-
-            {% if messages %}
-            {% for category , message in messages %}
-            <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endfor %}
-
-            {% endif %}
+                {% if messages %}
+                    {% for category , message in messages %}
+                    <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                {% endif %}
             {% endwith %}
 
             <article class="col-lg-8 col-md-12 col-sm-12 p-2 d-flex flex-column gap-2">
@@ -39,26 +37,36 @@
                     {% if post.post_owner.profile_picture %}
                     <img class="img-fluid rounded-circle profile"
                         src="{{url_for('static' , filename='files/{}'.format(post.post_owner.profile_picture))}}" alt="" />
-
                     {% else %}
                         <img src="{{url_for('static' , filename='empty.png')}}" />
                     {% endif %}
 
-                    <section class="d-flex flex-row ">
+                    <section class="d-flex flex-row flex-grow-1">
+                        
                         <div class="card-body">
-
+                
                             <h6 class="card-title">
                                 <a href="/profile/view/id={{post.post_owner.id}}">{{post.post_owner.username}}</a>
                                 &nbsp;
                                 <span>{{post.post_date}}</span>
                             </h6>
-
-                            <hr/>
-                            <p class="card-text"><b>
-                                    <h5>{{ post.title}}</h5>
-                                </b></p>
+                            <hr>
+                        
+                            <p class="card-text">
+                                <b><h5>{{ post.title}}</h5></b>
+                            </p>
+                            
                             <a href="/post/view/id={{post.id}}" class="link link-primary">View</a>
+                            
                         </div>
+                    
+                        <script defer>
+                            document.querySelectorAll('.profile').forEach(item => {
+                                item.addEventListener('error' , () => {
+                                    item.src = "{{url_for('static' , filename='empty.png')}}"
+                                })
+                            })
+                        </script>
                     </section>
                 </div>
                 {% endfor %}
@@ -114,13 +122,7 @@
                 
             </section>
         </section>
-        <script defer>
-            $(document).ready(function() {
-                $('.profile').on('error' , function() {
-                    $(this).attr("src" , "{{url_for('static' , filename='empty.png')}}");
-                })
-            })
-        </script>
+        
     </main>
 </body>
 

@@ -44,6 +44,8 @@
                         {{ post.title }}
                     </h5>
                     <hr>
+
+
                     <p class="card-text">
                         <span><b>Category:</b></span>&nbsp;{{post.category.title}}
                     </p>
@@ -73,7 +75,7 @@
                         <img class="img-fluid rounded-circle profile"
                             src="{{url_for('static' , filename='files/{}'.format(reply.comment_owner.profile_picture))}}" alt="" />
                     {% endif %}
-                    <section>
+                    <section class="flex-grow-1">
                         <p class="card-title"><a href="{{url_for('main.profile' , id=reply.comment_owner.id)}}">
                             {{reply.comment_owner.username}}</a>&nbsp;<span>{{reply.comment_date}}</span>
                         </p>
