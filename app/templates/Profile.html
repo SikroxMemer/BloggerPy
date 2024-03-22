@@ -60,7 +60,7 @@
         <script defer>
             document.querySelectorAll('.profile').forEach(item => {
                 item.addEventListener('error' , () => {
-                    item.src = "{{url_for('static' , filename='empty.png')}}"
+                    item.src = "{{url_for('static' , filename='images/empty.png')}}"
                 })
             })
         </script>

@@ -36,7 +36,8 @@
 
                     {% if post.post_owner.profile_picture %}
                     <img class="img-fluid rounded-circle profile"
-                        src="{{url_for('static' , filename='files/{}'.format(post.post_owner.profile_picture))}}" alt="" />
+                        src="{{url_for('static' , filename='files/{}'.format(post.post_owner.profile_picture))}}" 
+                        alt="profilePicture" />
                     {% else %}
                         <img src="{{url_for('static' , filename='empty.png')}}" />
                     {% endif %}
@@ -46,24 +47,31 @@
                         <div class="card-body">
                 
                             <h6 class="card-title">
-                                <a href="/profile/view/id={{post.post_owner.id}}">{{post.post_owner.username}}</a>
+                                <a href="/profile/view/id={{post.post_owner.id}}" class="link text-">
+                                    {{post.post_owner.username}}</a>
                                 &nbsp;
-                                <span>{{post.post_date}}</span>
+                                <span class="postDate"></span>
+                                <script>
+                                    $(document).ready(() => {
+                                        const date = new Date('{{post.post_date}}') ;
+                                        $('.postDate').text(date.toDateString())
+                                    })
+                                </script>
                             </h6>
                             <hr>
                         
                             <p class="card-text">
-                                <b><h5>{{ post.title}}</h5></b>
+                                <b><h5>Titled : {{ post.title}}</h5></b>
                             </p>
                             
-                            <a href="/post/view/id={{post.id}}" class="link link-primary">View</a>
+                            <a href="/post/view/id={{post.id}}" class="btn btn-primary btn-sm">View</a>
                             
                         </div>
                     
                         <script defer>
                             document.querySelectorAll('.profile').forEach(item => {
                                 item.addEventListener('error' , () => {
-                                    item.src = "{{url_for('static' , filename='empty.png')}}"
+                                    item.src = "{{url_for('static' , filename='images/empty.png')}}"
                                 })
                             })
                         </script>

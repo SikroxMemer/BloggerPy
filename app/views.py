@@ -7,6 +7,10 @@ from app import (login_required, logout_user, login_user , current_user)
 from os import (path , mkdir)
 from werkzeug.utils import (secure_filename)
 
+from datetime import datetime
+
+
+
 routes = Blueprint('main', __name__, template_folder='templates')
 
 def secureFilename(filename:str):
@@ -48,7 +52,12 @@ def login():
         if user:
             if bcrypt.check_password_hash(user.password, form.password.data):
                 login_user(user)
+                flash("You've Successfuly Loged In !" , "success")
                 return redirect(url_for('main.index'))
+            else:
+                flash("Error : Wrong Credentials , please check your email or password" , "danger")
+        else:
+            flash("Warning : User Doesn't Exist" , "warning")
 
     return render_template('Login.html', form=form)
 
@@ -61,11 +70,11 @@ def register():
         hashed_password = bcrypt.generate_password_hash(form.password.data)
         new_user = User(username=form.username.data,
                         password=hashed_password, email=form.email.data)
+        
         db.session.add(new_user)
         db.session.commit()
 
         flash("Your account has been created!", "success")
-
         return redirect(url_for('main.login'))
 
     return render_template('Register.html', form=form)
@@ -176,15 +185,15 @@ def reply(id):
         return redirect(url_for('main.login'))
 
 
-@routes.route('/reply/delete/id=<int:id>' , methods=['GET' , 'POST'])
+@routes.route('/post/id=<int:post>/reply/delete/id=<int:id>' , methods=['GET' , 'POST'])
 @login_required
-def reply_delete(id):
+def reply_delete(id , post):
     if current_user.is_authenticated:
         reply = Comment.query.filter_by(id=id).first()
         db.session.delete(reply)
         db.session.commit()
         flash('Reply Deleted' , 'info')
-        return redirect(url_for('main.index'))
+        return redirect(url_for('main.view' , id=post))
     else:
         return redirect(url_for('main.login'))
 
@@ -216,7 +225,7 @@ def profile_edit():
                     user.profile_picture = file.filename
 
             except OSError as error:
-                mkdir(path.join(path.dirname(__file__) , 'static' , 'files'))
+                # mkdir(path.join(path.dirname(__file__) , 'static' , 'files'))
                 file.save(secureFilename(file.filename))
                 user.profile_picture = file.filename
 

@@ -87,3 +87,18 @@ class Comment(db.Model):
 
     def __repr__(self) -> str:
         return '<Comment %r>' % self.id
+    
+
+
+class Ratings(db.Model):
+    id = db.Column(db.Integer , primary_key=True)
+    positiveRate = db.Column(db.Boolean)
+    negativeRate = db.Column(db.Boolean)
+    user = db.relationship(
+        'User' , 
+        backref=db.backref(
+            'ratings' , 
+            cascade='all , delete-orphan'
+    ))
+    def __repr__(self) -> str:
+        return '<Rating %r>' % self.id

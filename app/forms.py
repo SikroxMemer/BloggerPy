@@ -3,7 +3,7 @@ from wtforms.validators import InputRequired, Length, ValidationError, Optional
 from flask_ckeditor import CKEditorField
 from flask_wtf import FlaskForm
 from flask_wtf.file import (FileField, FileAllowed)
-from .models import Category, Post, User
+from app.models import User
 
 
 class ReiterationForm(FlaskForm):
@@ -60,7 +60,7 @@ class ProfileForm(FlaskForm):
     username = StringField(render_kw={"placeholder": "Username", 'class': "form-control"})
     email = EmailField(render_kw={"placeholder": "Email", 'disabled': True  , 'class' : 'form-control'})
     profile_picture = FileField(
-        'File', validators=[Optional() , FileAllowed(['jpg', 'png'])] , 
+        'File', validators=[Optional() , FileAllowed(['jpg', 'png' , 'jpeg' , 'webpg'])] ,
         render_kw={'class' : 'form-control'})
     
     about = CKEditorField()

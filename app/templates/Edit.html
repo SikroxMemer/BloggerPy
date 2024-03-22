@@ -23,10 +23,10 @@
                 </form>
             </div>
         </section>
-        <script>
-            $(document).ready(() => {
-                $('#edit_story').val("{{post.story}}")
-            })
+        <script defer>
+            document.getElementById('edit_story').value = `
+            {{post.story|safe}}
+            `
         </script>
     </main>
 </body>

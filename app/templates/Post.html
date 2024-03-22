@@ -84,7 +84,8 @@
                             {{ reply.comment|safe }}
                         </p>
                         {% if reply.comment_owner_id == current_user.id %}
-                            <a href="/reply/delete/id={{reply.id}}" class="btn btn-danger btn-sm">Delete</a>
+                            <a href="{{url_for('main.reply_delete' , id=reply.id , post=post.id)}}" 
+                            class="btn btn-danger btn-sm">Delete</a>
                         {% endif %}
                     </section>
                 </div>
@@ -111,7 +112,7 @@
         <script defer>
             document.querySelectorAll('.profile').forEach(item => {
                 item.addEventListener('error' , () => {
-                    item.src = "{{url_for('static' , filename='empty.png')}}"
+                    item.src = "{{url_for('static' , filename='images/empty.png')}}"
                 })
             })
         </script>
