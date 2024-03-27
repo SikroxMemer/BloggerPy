@@ -7,14 +7,24 @@
     <title>Profile</title>
 </head>
 
-<body>
+<body class="">
     {% include 'Navbar.template.html' %}
-    <section class="col-12 p-5">
-        <div class="card">
-            <div class="card-header">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category , message in messages %}
+    <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <section class="col-lg-6 col-md-12 col-sm-12 p-5 container">
+        <div>
+            <div>
                 <h1>Edit Profile</h1>
             </div>
-            <div class="card-body">
+            <div>
                 <form action="" class="d-flex flex-column gap-2" method="POST" enctype="multipart/form-data">
                     {{ form.hidden_tag() }}
                     {{ form.username(value=user.username) }}

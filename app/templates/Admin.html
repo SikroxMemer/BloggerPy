@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'Base.template.html' %}
+    <title>Home Page</title>
+</head>
+<style>
+
+</style>
+
+<body>
+    {% include 'Navbar.Admin.template.html' %}
+    <main class="container-fluid p-5">
+        <section class="d-flex flex-row justify-content-evenly">
+
+            <section class="">
+
+                <h3>Categories</h3>
+                <table class="table display" id="example">
+                    <tr class="text-center">
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Action</th>
+                    </tr>
+                    {% for category in categories %}
+                    <tr class="text-center">
+                        <td>{{category.id }}</td>
+                        <td>{{category.title }}</td>
+                        <td>
+                            <a class="btn btn-danger btn-sm" href="{{url_for('main.category_delete' , id=category.id)}}">Remove</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+
+                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
+                    data-bs-target="#AddCategory">
+                    Add Category
+                </button>
+                <div class="modal fade" id="AddCategory" data-bs-backdrop="static" data-bs-keyboard="false"
+                    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Category</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <form action="" method="POST">
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="title" class="form-label">Category Title</label>
+                                        {{ category_form.hidden_tag() }}
+                                        {{ category_form.title }}
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    {{category_form.submit}}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <br />
+
+                {% for page in categories.iter_pages(left_edge=1,right_edge=1,left_current=1,right_current=2) %}
+                {% if page %}
+                {% if posts.page == page %}
+                <a class="btn btn-primary mb-4 btn-sm"
+                    href="{{url_for('main.admin' , category_page=page)}}">{{page}}</a>
+                {% else %}
+                <a class="btn btn-outline-primary mb-4 btn-sm"
+                    href="{{url_for('main.admin' , category_page=page)}}">{{page}}</a>
+                {% endif %}
+                {% else %}
+                ...
+                {% endif %}
+                {% endfor %}
+
+
+
+            </section>
+
+            <section class="d-flex flex-column">
+                <div>
+                    <h3>Users</h3>
+                    <table class="table">
+                        <tr class="text-center">
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>About</th>
+                            <th>Password</th>
+                            <th>Account Type</th>
+                            <th>Actions</th>
+                        </tr>
+                        {% for user in users %}
+                        <tr class="text-center">
+                            <td>{{user.id }}</td>
+                            <td>{{user.username }}</td>
+                            <td>{{user.email }}</td>
+                            <td>{{user.about}}</td>
+                            <td>{{user.password}}</td>
+                            <td>{{user.type}}</td>
+                            <td>
+                                {% if user.type != 'Admin' %}
+                                    <a class="btn btn-danger btn-sm" href="{{url_for('main.user_delete' , id=user.id)}}">Remove</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    {% for page in users.iter_pages(left_edge=1,right_edge=1,left_current=1,right_current=2) %}
+                    {% if page %}
+                    {% if posts.page == page %}
+                    <a class="btn btn-primary mb-4 btn-sm"
+                        href="{{url_for('main.admin' , user_page=page)}}">{{page}}</a>
+                    {% else %}
+                    <a class="btn btn-outline-primary mb-4 btn-sm"
+                        href="{{url_for('main.admin' , user_page=page)}}">{{page}}</a>
+                    {% endif %}
+                    {% else %}
+                    ...
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <div>
+                    <h3>Posts</h3>
+                    <table class="table">
+                        <tr class="text-center">
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Story</th>
+                            <th>Category ID</th>
+                            <th>Category</th>
+                            <th>Post Date</th>
+                            <th>Post Owner ID</th>
+                            <th>Post Owner</th>
+                            <th>Actions</th>
+                        </tr>
+                        {% for post in posts %}
+                        <tr class="text-center">
+                            <td>{{post.id }}</td>
+                            <td>{{post.title }}</td>
+                            <td>{{post.story }}</td>
+                            <td>{{post.category_id}}</td>
+                            <td>{{post.category.title}}</td>
+                            <td>{{post.post_date}}</td>
+                            <td>{{post.post_owner_id}}</td>
+                            <td>{{post.post_owner.username}}</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm">Remove</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    {% for page in posts.iter_pages(left_edge=1,right_edge=1,left_current=1,right_current=2) %}
+                    {% if page %}
+                    {% if posts.page == page %}
+                    <a class="btn btn-primary mb-4 btn-sm"
+                        href="{{url_for('main.admin' , post_page=page)}}">{{page}}</a>
+                    {% else %}
+                    <a class="btn btn-outline-primary mb-4 btn-sm"
+                        href="{{url_for('main.admin' , post_page=page)}}">{{page}}</a>
+                    {% endif %}
+                    {% else %}
+                    ...
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <div>
+                    <h3>Replies</h3>
+                    <table class="table">
+                        <tr class="text-center">
+                            <th>ID</th>
+                            <th>Comment</th>
+                            <th>Comment Date</th>
+                            <th>Comment Owner ID</th>
+                            <th>Comment Owner</th>
+                            <th>Post ID</th>
+                            <th>Post Title</th>
+                        </tr>
+                        {% for comment in comments %}
+                        <tr class="text-center">
+                            <td>{{comment.id }}</td>
+                            <td>{{comment.comment }}</td>
+                            <td>{{comment.comment_date }}</td>
+                            <td>{{comment.comment_owner_id}}</td>
+                            <td>{{comment.comment_owner.username}}</td>
+                            <td>{{comment.post_id}}</td>
+                            <td>{{comment.post.title}}</td>
+                            <td>
+                                <a class="btn btn-danger btn-sm" href="url_for('main.sudo_reply_delete' , id=comment.id)">Remove</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    {% for page in replies.iter_pages(left_edge=1,right_edge=1,left_current=1,right_current=2) %}
+                    {% if page %}
+                    {% if posts.page == page %}
+                    <a class="btn btn-primary mb-4 btn-sm"
+                        href="{{url_for('main.admin' , reply_page=page)}}">{{page}}</a>
+                    {% else %}
+                    <a class="btn btn-outline-primary mb-4 btn-sm"
+                        href="{{url_for('main.admin' , reply_page=page)}}">{{page}}</a>
+                    {% endif %}
+                    {% else %}
+                    ...
+                    {% endif %}
+                    {% endfor %}
+                </div>
+
+            </section>
+        </section>
+
+    </main>
+</body>
+
+</html>

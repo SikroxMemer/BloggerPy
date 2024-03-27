@@ -1,13 +1,13 @@
 from flask import (Blueprint, render_template, redirect, url_for , flash , request)
 from app.extenstions import (login_manager, bcrypt, db)
 from app.models import (User, Post, Category , Comment)
-from app.forms import (LoginForm, ReiterationForm, PostForm , EditForm , ReplyForm , ProfileForm)
+from app.forms import (LoginForm, ReiterationForm, PostForm , EditForm , ReplyForm , ProfileForm , CategoryForm)
 from app.settings import (UPLOAD_FOLDER)
 from app import (login_required, logout_user, login_user , current_user)
 from os import (path , mkdir)
 from werkzeug.utils import (secure_filename)
-
-from datetime import datetime
+from datetime import (datetime)
+from base64 import (b64encode)
 
 
 
@@ -23,7 +23,7 @@ def load_user(user_id):
         return User.query.get(user_id)
     except:
         return redirect(url_for('main.login'))
-
+    
 
 @routes.route('/')
 def index():
@@ -53,7 +53,10 @@ def login():
             if bcrypt.check_password_hash(user.password, form.password.data):
                 login_user(user)
                 flash("You've Successfuly Loged In !" , "success")
-                return redirect(url_for('main.index'))
+                if user.type == 'User':
+                    return redirect(url_for('main.index'))
+                else:
+                    return redirect(url_for('main.admin'))
             else:
                 flash("Error : Wrong Credentials , please check your email or password" , "danger")
         else:
@@ -237,7 +240,7 @@ def profile_edit():
             db.session.commit()
             flash("Profile Have Been Updated" , "success")
             return redirect(url_for('main.profile' , id=current_user.id))
-            
+      
         return render_template('ProfileEdit.html' , form=form , user=user)
     else:
         return redirect(url_for('main.login'))
@@ -245,3 +248,60 @@ def profile_edit():
 @routes.errorhandler(401)
 def error(error):
     return render_template('Error.html')
+
+
+@routes.route("/admin" , methods=['POST' , 'GET'])
+@login_required
+def admin():
+
+    category_form = CategoryForm()
+
+    category_page = request.args.get('category_page' , 1 , type=int)
+    user_page = request.args.get('user_page' , 1 , type=int)
+    post_page = request.args.get('post_page' , 1 , type=int)
+    reply_page = request.args.get('reply_page' , 1 , type=int)
+
+    users = User.query.paginate(page=user_page , per_page=5)
+    posts  = Post.query.paginate(page=post_page , per_page=5)
+    replies = Comment.query.paginate(page=reply_page , per_page=5)
+    categories = Category.query.paginate(page=category_page , per_page=5)
+
+
+    if category_form.validate_on_submit():
+        category = Category()
+        category.title = category_form.title.data
+        db.session.add(category)
+        db.session.commit()
+        return redirect(url_for('main.admin'))
+
+    return render_template(
+        'Admin.html' , 
+        users=users , 
+        posts=posts , 
+        categories=categories , 
+        replies=replies,
+        category_form=category_form
+    )
+
+
+@routes.route('/category/delete/id=<int:id>' , methods=['POST' , 'GET'])
+def category_delete(id):
+    category = Category.query.filter_by(id=id).first()
+    db.session.delete(category)
+    db.session.commit()
+    return redirect(url_for('main.admin'))
+
+
+@routes.route('/user/delete/id=<int:id>' , methods=['POST' , 'GET'])
+def user_delete(id):
+    user = User.query.filter_by(id=id).first()
+    db.session.delete(user)
+    db.session.commit()
+    return redirect(url_for('main.admin'))
+
+@routes.route('/comment/delete/id=<int:id>' , methods=['POST' , 'GET'])
+def sudo_reply_delete(id):
+    reply = Comment.query.filter_by(id=id).first()
+    db.session.delete(reply)
+    db.session.commit()
+    return redirect(url_for('main.admin'))

@@ -60,8 +60,17 @@ class ProfileForm(FlaskForm):
     username = StringField(render_kw={"placeholder": "Username", 'class': "form-control"})
     email = EmailField(render_kw={"placeholder": "Email", 'disabled': True  , 'class' : 'form-control'})
     profile_picture = FileField(
-        'File', validators=[Optional() , FileAllowed(['jpg', 'png' , 'jpeg' , 'webpg'])] ,
-        render_kw={'class' : 'form-control'})
+        'File', validators=[Optional() , FileAllowed(['jpg', 'png' , 'jpeg' , 'webp'])] ,
+        render_kw={'class' : 'form-control' , 'accept' : 'image/x-png,image/jpeg,image/jpg,/image/webp'})
     
     about = CKEditorField()
+
+
     submit = SubmitField("Modifier" , render_kw={'class' : 'btn btn-primary'})
+
+    
+
+class CategoryForm(FlaskForm):
+    title = StringField(render_kw={"placeholder": "Title", 'class': "form-control"} , 
+                        validators=[InputRequired('Please Provide A Title Before Submiting')])
+    submit = SubmitField(render_kw={"class" : "btn btn-primary"})
