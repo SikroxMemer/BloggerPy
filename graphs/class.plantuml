@@ -1,9 +1,7 @@
-@startuml CLASS
-' left to right direction
-' skinparam linetype ortho
-
-' Define entities
-
+@startuml
+left to right direction
+!theme plain
+' Entités
 class User {
     + id: Integer
     + username: String
@@ -11,11 +9,12 @@ class User {
     + profile_picture: String
     + email: String
     + about: String
+    + type: String (Défaut: "User")
     ---
-    createPost() : void
-    createReply(Inteeger postId) : void
-    modifyPost(Integer id) : void
-    deletePost(Integer id) : void
+    + createPost(): void
+    + createReply(Integer postId): void
+    + modifyPost(Integer id): void
+    + deletePost(Integer id): void
 }
 
 class Category {
@@ -28,17 +27,25 @@ class Post {
     + title: String
     + story: String
     + post_date: Date
+    ---
+    + post_owner: User
+    + category: Category
 }
 
 class Comment {
     + id: Integer
     + comment: String
     + comment_date: Date
+    ---
+    + comment_owner: User
+    + post: Post
 }
 
-' Relationships
-User "1" -- "n" Post : owns
-Post "1" -- "n" Comment : has
+' Relations
 Category "1" -- "n" Post : contains
+User "1" -- "n" Post : owns
+User "1" -- "n" Comment : has commented
+Post "1" -- "n" Comment : has comments
+
 
 @enduml

@@ -15,7 +15,7 @@
 
 <body>
     {% include 'Navbar.template.html' %}
-    <main class="container">
+    <main class="container-fluid">
         <section class="row m-2">
 
             {% with messages = get_flashed_messages(with_categories=true) %}
@@ -38,7 +38,7 @@
                                 src="{{url_for('static' , filename='files/{}'.format(post.post_owner.profile_picture))}}"
                                 alt="profilePicture" />
                             {% else %}
-                            <img src="{{url_for('static' , filename='empty.png')}}" />
+                            <img class="img-fluid rounded-circle profile" src="{{url_for('static' , filename='images/empty.png')}}" />
                         {% endif %}
                         <section class="d-flex flex-row flex-grow-1">
 

@@ -1,37 +1,39 @@
 @startuml
-   
+!theme plain
 skinparam linetype ortho
 left to right direction
 ' Define entities
-entity "User" {
-    + id: Integer
-    + username: String
-    + password: String
-    + profile_picture: String
-    + email: String
-    + about: String
+entity "Utilisateur" {
+    + id: Entier
+    + nom_utilisateur: Chaîne
+    + mot_de_passe: Chaîne
+    + photo_profil: Chaîne
+    + email: Chaîne
+    + type : Chaîne
+    + à_propos: Chaîne
 }
-entity "Category" {
-    + id: Integer
-    + title: String
-}
-
-entity "Post" {
-    + id: Integer
-    + title: String
-    + story: String
-    + post_date: Date
+entity "Catégorie" {
+    + id: Entier
+    + titre: Chaîne
 }
 
-entity "Comment" {
-    + id: Integer
-    + comment: String
-    + comment_date: Date
+entity "Article" {
+    + id: Entier
+    + titre: Chaîne
+    + histoire: Chaîne
+    + date_article: Date
+}
+
+entity "Commentaire" {
+    + id: Entier
+    + commentaire: Chaîne
+    + date_commentaire: Date
 }
 
 ' Relationships
-User --{ Post : "Owns"
-Post }--{ Comment : "Has"
-Category --{ Post : "Contains"
+Utilisateur --{ Article : "Possède"
+Article }--{ Commentaire : "A pour"
+Catégorie --{ Article : "Contient"
+
 
 @enduml

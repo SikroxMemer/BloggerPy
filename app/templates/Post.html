@@ -34,7 +34,7 @@
                 <img class="img-fluid rounded-circle profile"
                     src="{{url_for('static' , filename='files/{}'.format(post.post_owner.profile_picture))}}" alt="" />
                 {% else %}
-                <img src="{{url_for('static' , filename='empty.png')}}" />
+                <img class="img-fluid rounded-circle profile" src="{{url_for('static' , filename='images/empty.png')}}" />
                 {% endif %}
                 <div class="card-body">
                     <h5 class="card-title">
@@ -88,6 +88,8 @@
                     <img class="img-fluid rounded-circle profile"
                         src="{{url_for('static' , filename='files/{}'.format(reply.comment_owner.profile_picture))}}"
                         alt="" />
+                    {% else %}
+                    <img class="img-fluid rounded-circle profile" src="{{url_for('static' , filename='images/empty.png')}}" />
                     {% endif %}
                     <section class="flex-grow-1">
                         <p class="card-title"><a href="{{url_for('main.profile' , id=reply.comment_owner.id)}}">
@@ -110,7 +112,7 @@
             </article>
 
             {% endfor %}
-            <section class="d-flex flex-row gap-1 justify-content-center">
+            <section>
 
                 <!-- PAGINATION -->
                 {% for page in replies.iter_pages(left_edge=1,right_edge=1,left_current=1,right_current=2) %}
