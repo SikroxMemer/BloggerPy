@@ -23,6 +23,13 @@ class ReiterationForm(FlaskForm):
             raise ValidationError(
                 "Username already exists , Please Chose Another One"
             )
+        
+    def validate_email(self , email):
+        existing_user = User.query.filter_by(username=email.data).first()
+        if existing_user:
+            raise ValidationError(
+                "Email already exists , Please Chose Another One"
+            )
 
 
 class LoginForm(FlaskForm):

@@ -9,7 +9,10 @@ from werkzeug.utils import (secure_filename)
 from datetime import (datetime)
 from base64 import (b64encode)
 
-
+try:
+    mkdir(path.join(path.dirname(__file__) , 'static' , 'files'))
+except:
+    pass
 
 routes = Blueprint('main', __name__, template_folder='templates')
 
@@ -41,6 +44,7 @@ def index():
 @login_required
 def logout():
     logout_user()
+    flash("You've loged out" , "danger")
     return redirect(url_for('main.login'))
 
 
@@ -71,9 +75,8 @@ def register():
 
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data)
-        new_user = User(username=form.username.data,
-                        password=hashed_password, email=form.email.data)
-        
+        new_user = User(username=form.username.data,password=hashed_password, email=form.email.data)
+    
         db.session.add(new_user)
         db.session.commit()
 
