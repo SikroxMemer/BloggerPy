@@ -37,6 +37,8 @@ class Post(db.Model):
     post_owner = db.relationship('User', backref=db.backref(
         'post', cascade='all, delete-orphan'))
 
+    active = db.Column(db.Boolean , default=True)
+    
     def __repr__(self) -> str:
         return '<Post %r>' % self.id
 

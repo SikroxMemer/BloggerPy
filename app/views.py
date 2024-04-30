@@ -1,20 +1,18 @@
-from flask import (Blueprint, render_template, redirect, url_for , flash , request)
-from app.extenstions import (login_manager, bcrypt, db)
-from app.models import (User, Post, Category , Comment)
-from app.forms import (LoginForm, ReiterationForm, PostForm , EditForm , ReplyForm , ProfileForm , CategoryForm)
-from app.settings import (UPLOAD_FOLDER)
-from app import (login_required, logout_user, login_user , current_user)
-from os import (path , mkdir)
-from werkzeug.utils import (secure_filename)
-from datetime import (datetime)
-from base64 import (b64encode)
+from flask import Blueprint, render_template, redirect, url_for , flash , request
+from app.extenstions import login_manager, bcrypt, db
+from app.models import User, Post, Category , Comment
+from app.forms import LoginForm, ReiterationForm, PostForm , EditForm , ReplyForm , ProfileForm , CategoryForm
+from app.settings import UPLOAD_FOLDER
+from app import login_required, logout_user, login_user , current_user
+from os import path , mkdir
+from werkzeug.utils import secure_filename
 
 try:
     mkdir(path.join(path.dirname(__file__) , 'static' , 'files'))
 except:
     pass
 
-routes = Blueprint('main', __name__, template_folder='templates')
+routes = Blueprint('main', __name__ , template_folder='templates')
 
 def secureFilename(filename:str):
     __DIR__ = path.join(path.abspath(path.dirname(__file__)) , UPLOAD_FOLDER , secure_filename(filename=filename))
@@ -56,31 +54,31 @@ def login():
         if user:
             if bcrypt.check_password_hash(user.password, form.password.data):
                 login_user(user)
-                flash("You've Successfuly Loged In !" , "success")
+                flash("You've Successfully Loged In !" , "success")
                 if user.type == 'User':
                     return redirect(url_for('main.index'))
                 else:
                     return redirect(url_for('main.admin'))
             else:
-                flash("Error : Wrong Credentials , please check your email or password" , "danger")
+                flash("Wrong Credentials , please check your email or password" , "danger")
         else:
-            flash("Warning : User Doesn't Exist" , "warning")
+            flash("No such user exists with the current credentials" , "warning")
 
     return render_template('Login.html', form=form)
 
 
 @routes.route('/register', methods=['GET', 'POST'])
 def register():
-    form = ReiterationForm()
 
+    form = ReiterationForm()
     if form.validate_on_submit():
+
         hashed_password = bcrypt.generate_password_hash(form.password.data)
         new_user = User(username=form.username.data,password=hashed_password, email=form.email.data)
-    
         db.session.add(new_user)
         db.session.commit()
 
-        flash("Your account has been created!", "success")
+        flash("You've successfully created an account", "success")
         return redirect(url_for('main.login'))
 
     return render_template('Register.html', form=form)
@@ -92,11 +90,15 @@ def create():
     if current_user.is_authenticated:
         categories = Category.query.all()
         choices: list[tuple] = []
+
         for choice in categories:
             choices.append((choice.id, choice.title))
+
         form = PostForm()
         form.category.choices = choices
+
         if form.validate_on_submit():
+
             post = Post()
             post.title = form.title.data
             post.story = form.story.data
@@ -105,7 +107,7 @@ def create():
             db.session.add(post)
             db.session.commit()
 
-            flash("Your post has been created!", "success")
+            flash("You've successfully created a post ", "success")
 
             return redirect(url_for('main.index'))
         return render_template('Create.html', form=form)
@@ -135,7 +137,7 @@ def post_delete(id):
         post = Post.query.filter_by(id=id).first()
         db.session.delete(post)
         db.session.commit()
-        flash('Your post has been deleted', 'warning')
+        flash("You've successfully deleted your post", 'warning')
         return redirect(url_for('main.index'))
     else:
         return redirect(url_for('main.login'))
@@ -250,7 +252,8 @@ def profile_edit():
     
 @routes.errorhandler(401)
 def error(error):
-    return render_template('Error.html')
+    flash('Authentification is required' , 'danger')
+    return redirect(url_for('main.login'))
 
 
 @routes.route("/admin" , methods=['POST' , 'GET'])
