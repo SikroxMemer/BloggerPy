@@ -2,14 +2,11 @@
 <html lang="en">
 
 <head>
-    {% include 'Base.template.html' %}
+    {% include 'base.template.html' %}
     <title>Login Page</title>
 </head>
 
-<body class="d-flex 
-flex-column justify-content-center 
-align-content-center 
-align-items-center p-5">
+<body class="d-flex flex-column justify-content-center align-content-center align-items-center p-5">
 
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -22,13 +19,7 @@ align-items-center p-5">
     {% endif %}
     {% endwith %}
 
-    <form method="post" action="" class="d-flex 
-        flex-column 
-        align-content-center 
-        justify-content-center 
-        align-items-center
-        gap-2
-        col-lg-2 col-md-8 col-sm-12">
+    <form method="post" action="" class="d-flex flex-column align-content-center justify-content-center align-items-center gap-2 col-lg-2 col-md-8 col-sm-12">
         <h1 class="text-center">Login</h1>
         {{ form.hidden_tag() }}
         {{ form.email }}
@@ -40,7 +31,7 @@ align-items-center p-5">
         {% endfor %}
         {% endif %}
         <p>
-            New User ? <a href="{{url_for('main.register')}}">Register Here</a>
+            <span>New User</span> <a href="{{url_for('main.register')}}">Register Here</a>
         </p>
     </form>
 

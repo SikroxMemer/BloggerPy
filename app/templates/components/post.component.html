@@ -1,0 +1,113 @@
+{% macro PostComponent(posts) %}
+    {% if posts %}
+        {% for post in posts.items %}
+        <div class="card d-flex flex-row shadow-sm">
+            {% if post.post_owner.profile_picture %}
+            <img class="img-fluid rounded-circle profile"
+                src="{{url_for('static' , filename='files/{}'.format(post.post_owner.profile_picture))}}"
+                alt="profilePicture" />
+            {% else %}
+            <img class="img-fluid rounded-circle profile" src="{{url_for('static' , filename='images/empty.png')}}" />
+            {% endif %}
+            <section class="d-flex flex-row flex-grow-1">
+
+                <div class="card-body">
+
+                    <h6 class="card-title">
+                        <a href="/profile/view/id={{post.post_owner.id}}" class="link text-">
+                            {{post.post_owner.username}}</a>
+                        &nbsp;
+                        <span class="postDate"></span>
+                        <script>
+                            $(document).ready(() => {
+                                const date = new Date('{{post.post_date}}');
+                                $('.postDate').text(date.toDateString())
+                            })
+                        </script>
+                    </h6>
+                    <hr>
+
+                    <p class="card-text">
+                        <b>
+                            <h5>{{ post.title}}</h5>
+                        </b>
+                    </p>
+
+                    <a href="/post/view/id={{post.id}}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-view-list"></i>
+                        View
+                    </a>
+
+                </div>
+
+                <script defer>
+                    document.querySelectorAll('.profile').forEach(item => {
+                        item.addEventListener('error', () => {
+                            item.src = "{{url_for('static' , filename='images/empty.png')}}"
+                        })
+                    })
+                </script>
+            </section>
+        </div>
+        {% endfor %}
+    {% else %}
+    <p>No Post Were Created Yet</p>
+    {% endif %}
+<section class="d-flex flex-row gap-1">
+
+    <!-- PAGINATION -->
+    {% for page in posts.iter_pages(left_edge=1,right_edge=1,left_current=1,right_current=2) %}
+    {% if page %}
+    {% if posts.page == page %}
+    <a class="btn btn-primary mb-4" href="{{url_for('main.index' , page=page)}}">{{page}}</a>
+    {% else %}
+    <a class="btn btn-outline-primary mb-4" href="{{url_for('main.index' , page=page)}}">{{page}}</a>
+    {% endif %}
+    {% else %}
+    ...
+    {% endif %}
+    {% endfor %}
+
+</section>
+{% endmacro %}
+
+
+{% macro Button(active , url , icon , param , text , color) %}
+    <button {% if not active %}disabled{% endif %}
+    class="btn btn-{{color}} btn-sm d-flex flex-row align-content-center justify-content-center align-items-center">
+    <a class="text-light text-decoration-none d-flex flex-row gap-1" href="{{url_for(url , id=param)}}"><i class={{icon}} ></i><span>{{text}}</span></a>
+    </button>
+{% endmacro %}
+
+
+{% macro SinglePostComponent(post , current_user) %}
+    <article class="card d-flex flex-row gap-2 shadow-sm m-5">
+        {% if post.post_owner.profile_picture %}
+        <img class="img-fluid rounded-circle profile"
+            src="{{url_for('static' , filename='files/{}'.format(post.post_owner.profile_picture))}}" alt="" />
+        {% else %}
+        <img class="img-fluid rounded-circle profile"
+            src="{{url_for('static' , filename='images/empty.png')}}" />
+        {% endif %}
+        <div class="card-body" >
+            <h5 class="card-title">
+                {{ post.title }} {% if not post.active %}<span class="text-danger">[-- CLOSED --]</span>{% endif %}
+            </h5>
+            <hr>
+            <p class="card-text">
+                <span><b>Category:</b></span>&nbsp;{{post.category.title}}
+            </p>
+            <p class="card-text">
+                {{post.story|safe}}
+            </p>
+            <section class="btn-group">
+                {% if post.post_owner.id == current_user.id %}
+                {{Button(post.active , 'main.delete_post' , "bi-trash" , post.id , "Delete" , "danger")}}
+                {{Button(post.active , 'main.edit_post' , "bi-floppy" , post.id , "Edit" , "warning")}}           
+                {{Button(post.active , 'main.close_topic' , "bi-door-closed" , post.id , "Close Topic" , "secondary")}}
+                {% endif %}
+                {{Button(post.active , 'main.create_reply' , "bi-reply-all" , post.id , "Reply" , "info")}}
+            </section>
+        </div>
+    </article>
+{% endmacro %}

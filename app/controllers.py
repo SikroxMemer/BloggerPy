@@ -47,8 +47,6 @@ class AbstractController(ABC):
     def destroy():
         ...
 
-
-
 class PostController(AbstractController):
     @staticmethod
     def create():
@@ -68,7 +66,7 @@ class PostController(AbstractController):
             db.session.commit()
             flash("You've successfully created a post ", "success")
             return redirect(url_for('main.index'))
-        return render_template('Create.html', form=form)
+        return render_template('post.create.html', form=form)
     
 
     @staticmethod
@@ -76,14 +74,16 @@ class PostController(AbstractController):
         page = request.args.get('page' , 1 , type=int)
         post = Post.query.filter_by(id=id).first()
         replies = Comment.query.filter_by(post=post).paginate(page=page , per_page=5)
-        return render_template('Post.html', post=post , replies=replies)
+        return render_template('post.html', post=post , replies=replies)
     
     @staticmethod
     def edit(id : int):
         categories = Category.query.all()
         choices: list[tuple] = []
+
         for choice in categories:
             choices.append((choice.id, choice.title))
+
         post = Post.query.filter_by(id=id).first()
         form = EditForm()
 
@@ -95,7 +95,8 @@ class PostController(AbstractController):
             db.session.commit()
             flash('Your post has been edited', 'info')
             return redirect(url_for('main.view', id=id))
-        return render_template('Edit.html', post=post , form=form)
+        
+        return render_template('post.edit.html', post=post , form=form)
 
     @staticmethod
     def destroy(id):
@@ -132,7 +133,7 @@ class AuthController:
                     flash("Wrong Credentials , please check your email or password" , "danger")
             else:
                 flash("No such user exists with the current credentials" , "warning")
-        return render_template('Login.html', form=form)
+        return render_template('login.html', form=form)
     
     @staticmethod
     def register():
@@ -144,7 +145,7 @@ class AuthController:
             db.session.commit()
             flash("You've successfully created an account", "success")
             return redirect(url_for('main.login'))
-        return render_template('Register.html', form=form)
+        return render_template('register.html', form=form)
     
     @staticmethod
     def logout():
@@ -170,7 +171,7 @@ class ReplyController():
             db.session.commit()
             flash('Reply Added' , 'success')
             return redirect(url_for('main.view' , id=id))
-        return render_template('Reply.html', post=post , form=form)
+        return render_template('post.reply.html', post=post , form=form)
   
         
     @staticmethod
@@ -207,12 +208,12 @@ class ProfileController():
             user.username = form.username.data
             db.session.commit()
             flash("Profile Have Been Updated" , "success")
-            return redirect(url_for('main.profile' , id=current_user.id))
-        return render_template('ProfileEdit.html' , form=form , user=user)
+            return redirect(url_for('main.view_profile' , id=current_user.id))
+        return render_template('profile.edit.html' , form=form , user=user)
     @staticmethod
     def view(id):
         user = User.query.filter_by(id=id).first()
         if not user:
             flash('No User with the ID : {} Found !'.format(id) , 'danger')
             return redirect(url_for('main.index'))
-        return render_template('Profile.html' , user=user)
+        return render_template('profile.html' , user=user)

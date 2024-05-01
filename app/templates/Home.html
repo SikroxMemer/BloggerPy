@@ -2,114 +2,27 @@
 <html lang="en">
 
 <head>
-    {% include 'Base.template.html' %}
+    {% include 'base.template.html' %}
     <title>Home Page</title>
 </head>
-<style>
-    .profile {
-        width: 75px;
-        height: 75px;
-        margin: 15px;
-    }
-</style>
 
 <body>
-    {% include 'Navbar.template.html' %}
+    {% include 'navbar.template.html' %}
     <main class="container-fluid p-5">
         <section class="row m-2">
+            
+            {% from './components/post.component.html' import PostComponent %}
+            {% from './components/message.component.html' import MessageComponent %}
 
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            {% for category , message in messages %}
-            <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endfor %}
-            {% endif %}
-            {% endwith %}
+            {{ MessageComponent(messages) }}
 
             <article class="col-lg-8 col-md-12 col-sm-12 p-2 d-flex flex-column gap-2">
-                {% if posts %}
-                    {% for post in posts.items %}
-                    <div class="card d-flex flex-row shadow-sm">
-                        {% if post.post_owner.profile_picture %}
-                            <img class="img-fluid rounded-circle profile"
-                                src="{{url_for('static' , filename='files/{}'.format(post.post_owner.profile_picture))}}"
-                                alt="profilePicture" />
-                            {% else %}
-                            <img class="img-fluid rounded-circle profile" src="{{url_for('static' , filename='images/empty.png')}}" />
-                        {% endif %}
-                        <section class="d-flex flex-row flex-grow-1">
-
-                            <div class="card-body">
-
-                                <h6 class="card-title">
-                                    <a href="/profile/view/id={{post.post_owner.id}}" class="link text-">
-                                        {{post.post_owner.username}}</a>
-                                    &nbsp;
-                                    <span class="postDate"></span>
-                                    <script>
-                                        $(document).ready(() => {
-                                            const date = new Date('{{post.post_date}}');
-                                            $('.postDate').text(date.toDateString())
-                                        })
-                                    </script>
-                                </h6>
-                                <hr>
-
-                                <p class="card-text">
-                                    <b>
-                                        <h5>{{ post.title}}</h5>
-                                    </b>
-                                </p>
-
-                                <a href="/post/view/id={{post.id}}" class="btn btn-primary btn-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-view-list" viewBox="0 0 16 16">
-                                        <path
-                                            d="M3 4.5h10a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2m0 1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1zM1 2a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 2m0 12a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 14" />
-                                    </svg>
-                                    View
-                                </a>
-
-                            </div>
-
-                            <script defer>
-                                document.querySelectorAll('.profile').forEach(item => {
-                                    item.addEventListener('error', () => {
-                                        item.src = "{{url_for('static' , filename='images/empty.png')}}"
-                                    })
-                                })
-                            </script>
-                        </section>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <p>No Post Were Created Yet</p>
-                {% endif %}
-                
-                <section class="d-flex flex-row gap-1">
-
-                    <!-- PAGINATION -->
-                    {% for page in posts.iter_pages(left_edge=1,right_edge=1,left_current=1,right_current=2) %}
-                    {% if page %}
-                    {% if posts.page == page %}
-                    <a class="btn btn-primary mb-4" href="{{url_for('main.index' , page=page)}}">{{page}}</a>
-                    {% else %}
-                    <a class="btn btn-outline-primary mb-4" href="{{url_for('main.index' , page=page)}}">{{page}}</a>
-                    {% endif %}
-                    {% else %}
-                    ...
-                    {% endif %}
-                    {% endfor %}
-
-                </section>
+                {{ PostComponent(posts) }}
             </article>
 
             <section class="col-lg-4 col-md-12 col-sm-12 d-flex flex-column gap-2 p-2">
 
-                <ul class="list-group shadow-sm"">
+                <ul class="list-group shadow-sm">
                     <h2 class=" list-group-item active">Content Requirements</h2>
                     <li class="list-group-item">Originality: We encourage original content that reflects your unique
                         perspective and voice.
@@ -127,7 +40,7 @@
                         avoid plagiarism.</li>
                 </ul>
 
-                <ul class="list-group shadow-sm"">
+                <ul class="list-group shadow-sm">
                     <h2 class=" list-group-item active">Prohibited Content:</h2>
                     <li class="list-group-item">Hate speech, discrimination, or incitement to violence.</li>
                     <li class="list-group-item">Personal attacks, insults, or harassment.</li>
@@ -138,7 +51,6 @@
 
             </section>
         </section>
-
     </main>
 </body>
 

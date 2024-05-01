@@ -41,7 +41,7 @@ def load_user(user_id):
 def index():
     page = request.args.get('page' , 1 , type=int)
     posts = Post.query.paginate(page=page , per_page=5)
-    return render_template('Home.html', posts=posts)
+    return render_template('home.html', posts=posts)
 
 @routes.route('/logout', methods=['POST', 'GET'])
 @login_required
