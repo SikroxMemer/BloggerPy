@@ -1,4 +1,4 @@
-{% macro ReplyComponent(replies) %}
+{% macro ReplyComponent(replies , current_user) %}
 {% for reply in replies %}
             <article class="card shadow-sm">
 
@@ -17,7 +17,7 @@
                     {% endif %}
 
                     <section class="flex-grow-1">
-                        <p class="card-title"><a href="{{url_for('main.profile' , id=reply.comment_owner.id)}}">
+                        <p class="card-title"><a href="{{url_for('main.view_profile' , id=reply.comment_owner.id)}}">
                                 {{reply.comment_owner.username}}</a>&nbsp;<span>{{reply.comment_date}}</span>
                         </p>
                         <hr>
@@ -27,7 +27,7 @@
                         </p>
 
                         {% if reply.comment_owner_id == current_user.id %}
-                        <a href="{{url_for('main.reply_delete' , id=reply.id , post=post.id)}}"
+                        <a href="{{url_for('main.delete_reply' , id=reply.id , post=reply.post.id)}}"
                             class="btn btn-danger btn-sm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                 fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
                                 <path
@@ -39,18 +39,16 @@
                 </div>
 
             </article>
-
-            {% endfor %}
             <section>
 
                 <!-- PAGINATION -->
                 {% for page in replies.iter_pages(left_edge=1,right_edge=1,left_current=1,right_current=2) %}
                 {% if page %}
                 {% if replies.page == page %}
-                <a class="btn btn-primary mb-4" href="{{url_for('main.view' , page=page , id=post.id)}}">{{page}}</a>
+                <a class="btn btn-primary mb-4" href="{{url_for('main.view_post' , page=page , id=reply.post.id)}}">{{page}}</a>
                 {% else %}
                 <a class="btn btn-outline-primary mb-4"
-                    href="{{url_for('main.view' , page=page , id=post.id)}}">{{page}}</a>
+                    href="{{url_for('main.view_post' , page=page , id=reply.post.id)}}">{{page}}</a>
                 {% endif %}
                 {% else %}
                 ...
@@ -58,4 +56,7 @@
                 {% endfor %}
 
             </section>
+
+            {% endfor %}
+            
 {% endmacro %}

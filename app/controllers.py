@@ -111,7 +111,7 @@ class PostController(AbstractController):
         post = Post.query.get(id)
         post.active = False
         db.session.commit()
-        return redirect(url_for('main.view' , id=id))
+        return redirect(url_for('main.view_post' , id=id))
     
 
 
@@ -170,7 +170,7 @@ class ReplyController():
             db.session.add(reply)
             db.session.commit()
             flash('Reply Added' , 'success')
-            return redirect(url_for('main.view' , id=id))
+            return redirect(url_for('main.view_post' , id=id))
         return render_template('post.reply.html', post=post , form=form)
   
         
@@ -180,7 +180,7 @@ class ReplyController():
         db.session.delete(reply)
         db.session.commit()
         flash('Reply Deleted' , 'info')
-        return redirect(url_for('main.view' , id=post))
+        return redirect(url_for('main.view_post' , id=post))
 
 
 class ProfileController():
