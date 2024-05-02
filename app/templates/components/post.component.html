@@ -59,9 +59,9 @@
         {% for page in posts.iter_pages(left_edge=1,right_edge=1,left_current=1,right_current=2) %}
         {% if page %}
         {% if posts.page == page %}
-        <a class="btn btn-primary mb-4" href="{{url_for('main.index' , page=page)}}">{{page}}</a>
+        <a class="btn btn-primary mb-4" href="{{url_for('main.index' , page=page , category=request.args.get('category'))}}">{{page}}</a>
         {% else %}
-        <a class="btn btn-outline-primary mb-4" href="{{url_for('main.index' , page=page)}}">{{page}}</a>
+        <a class="btn btn-outline-primary mb-4" href="{{url_for('main.index' , page=page , category=request.args.get('category'))}}">{{page}}</a>
         {% endif %}
         {% else %}
         ...
