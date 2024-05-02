@@ -94,7 +94,7 @@ class PostController(AbstractController):
             post.category_id = form.edit_category.data
             db.session.commit()
             flash('Your post has been edited', 'info')
-            return redirect(url_for('main.view', id=id))
+            return redirect(url_for('main.view_post', id=id))
         
         return render_template('post.edit.html', post=post , form=form)
 

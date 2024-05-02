@@ -50,9 +50,9 @@ def index():
     category = request.args.get('category' , 'all' , type=str)
 
     if category == 'all':
-        posts = Post.query.paginate(page=page , per_page=5)
+        posts = Post.query.filter_by(active=True).paginate(page=page , per_page=5)
     else:
-        posts = Post.query.filter_by(category_id=int(category)).paginate(page=page , per_page=5)
+        posts = Post.query.filter_by(category_id=int(category) , active=True).paginate(page=page , per_page=5)
 
 
 
