@@ -217,3 +217,9 @@ class ProfileController():
             flash('No User with the ID : {} Found !'.format(id) , 'danger')
             return redirect(url_for('main.index'))
         return render_template('profile.html' , user=user)
+    
+
+class AdminController:
+    @staticmethod
+    def view():
+        return render_template('admin.html')

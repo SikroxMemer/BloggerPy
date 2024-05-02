@@ -11,11 +11,18 @@ from app.controllers import (
     PostController , 
     AuthController , 
     ReplyController ,
-    ProfileController
+    ProfileController ,
+    AdminController
 )
 
 from app.extenstions import login_manager
-from app.models import User, Post
+
+from app.models import (
+    User, 
+    Post,
+    Category
+)
+
 from app import login_required
 from os import path , mkdir
 
@@ -40,8 +47,17 @@ def load_user(user_id):
 @login_required
 def index():
     page = request.args.get('page' , 1 , type=int)
-    posts = Post.query.paginate(page=page , per_page=5)
-    return render_template('home.html', posts=posts)
+    category = request.args.get('category' , 'all' , type=str)
+
+    if category == 'all':
+        posts = Post.query.paginate(page=page , per_page=5)
+    else:
+        posts = Post.query.filter_by(category_id=int(category)).paginate(page=page , per_page=5)
+
+
+
+    categories = Category.query.all()
+    return render_template('home.html', posts=posts , categories=categories)
 
 @routes.route('/logout', methods=['POST', 'GET'])
 @login_required
@@ -69,7 +85,7 @@ def view_post(id):
 @routes.route('/post/delete/id=<int:id>' , methods=['GET','POST'])
 @login_required
 def delete_post(id):
-   return PostController.destory(id)
+   return PostController.destroy(id)
 
 @routes.route('/post/edit/id=<int:id>' , methods=['GET' , 'POST'])
 @login_required
@@ -84,7 +100,7 @@ def create_reply(id):
 @routes.route('/post/id=<int:post>/reply/delete/id=<int:id>' , methods=['GET' , 'POST'])
 @login_required
 def delete_reply(id , post):
-    return ReplyController.destory(id , post)
+    return ReplyController.destroy(id , post)
 
 @routes.route('/profile/view/id=<int:id>'  , methods=['GET' , 'POST'])
 @login_required
@@ -101,68 +117,10 @@ def edit_profile():
 def close_topic(id):
    return PostController.close(id)
 
-
-
-# @routes.route("/admin" , methods=['POST' , 'GET'])
-# @login_required
-# def admin():
-
-#     category_form = CategoryForm()
-
-#     category_page = request.args.get('category_page' , 1 , type=int)
-#     user_page = request.args.get('user_page' , 1 , type=int)
-#     post_page = request.args.get('post_page' , 1 , type=int)
-#     reply_page = request.args.get('reply_page' , 1 , type=int)
-
-#     users = User.query.paginate(page=user_page , per_page=5)
-#     posts  = Post.query.paginate(page=post_page , per_page=5)
-#     replies = Comment.query.paginate(page=reply_page , per_page=5)
-#     categories = Category.query.paginate(page=category_page , per_page=5)
-
-
-#     if category_form.validate_on_submit():
-#         category = Category()
-#         category.title = category_form.title.data
-#         db.session.add(category)
-#         db.session.commit()
-#         return redirect(url_for('main.admin'))
-
-#     return render_template(
-#         'Admin.html' , 
-#         users=users , 
-#         posts=posts , 
-#         categories=categories , 
-#         replies=replies,
-#         category_form=category_form
-#     )
-
-
-# @routes.route('/category/delete/id=<int:id>' , methods=['POST' , 'GET'])
-# def category_delete(id):
-#     category = Category.query.filter_by(id=id).first()
-#     db.session.delete(category)
-#     db.session.commit()
-#     return redirect(url_for('main.admin'))
-
-
-# @routes.route('/user/delete/id=<int:id>' , methods=['POST' , 'GET'])
-# def user_delete(id):
-#     user = User.query.filter_by(id=id).first()
-#     db.session.delete(user)
-#     db.session.commit()
-#     return redirect(url_for('main.admin'))
-
-# @routes.route('/comment/delete/id=<int:id>' , methods=['POST' , 'GET'])
-# def sudo_reply_delete(id):
-#     reply = Comment.query.filter_by(id=id).first()
-#     db.session.delete(reply)
-#     db.session.commit()
-#     return redirect(url_for('main.admin'))
-
-
-
-
-
+@routes.route('/admin' , methods=['GET' , 'POST'])
+@login_required
+def view_admin():
+    return AdminController.view()
 
 @routes.errorhandler(401)
 def error(error):

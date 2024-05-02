@@ -1,5 +1,5 @@
 {% macro PostComponent(posts) %}
-    {% if posts %}
+    {% if posts.items|length >= 1 %}
         {% for post in posts.items %}
         <div class="card d-flex flex-row shadow-sm">
             {% if post.post_owner.profile_picture %}
@@ -12,7 +12,6 @@
             <section class="d-flex flex-row flex-grow-1">
 
                 <div class="card-body">
-
                     <h6 class="card-title">
                         <a href="/profile/view/id={{post.post_owner.id}}" class="link text-">
                             {{post.post_owner.username}}</a>
@@ -26,20 +25,16 @@
                         </script>
                     </h6>
                     <hr>
-
                     <p class="card-text">
                         <b>
                             <h5>{{ post.title}}</h5>
                         </b>
                     </p>
-
                     <a href="/post/view/id={{post.id}}" class="btn btn-primary btn-sm">
                         <i class="bi bi-view-list"></i>
                         View
                     </a>
-
                 </div>
-
                 <script defer>
                     document.querySelectorAll('.profile').forEach(item => {
                         item.addEventListener('error', () => {
@@ -51,25 +46,30 @@
         </div>
         {% endfor %}
     {% else %}
-    <p>No Post Were Created Yet</p>
+        <section class="mt-5 d-flex flex-column align-items-center">
+            <h1>
+                <i class="bi bi-emoji-frown"></i>
+            </h1>
+            <p class="text-center">No Post Were Created Yet</p>
+        </section>
     {% endif %}
-<section class="d-flex flex-row gap-1">
+    <section class="d-flex flex-row gap-1">
 
-    <!-- PAGINATION -->
-    {% for page in posts.iter_pages(left_edge=1,right_edge=1,left_current=1,right_current=2) %}
-    {% if page %}
-    {% if posts.page == page %}
-    <a class="btn btn-primary mb-4" href="{{url_for('main.index' , page=page)}}">{{page}}</a>
-    {% else %}
-    <a class="btn btn-outline-primary mb-4" href="{{url_for('main.index' , page=page)}}">{{page}}</a>
-    {% endif %}
-    {% else %}
-    ...
-    {% endif %}
-    {% endfor %}
+        <!-- PAGINATION -->
+        {% for page in posts.iter_pages(left_edge=1,right_edge=1,left_current=1,right_current=2) %}
+        {% if page %}
+        {% if posts.page == page %}
+        <a class="btn btn-primary mb-4" href="{{url_for('main.index' , page=page)}}">{{page}}</a>
+        {% else %}
+        <a class="btn btn-outline-primary mb-4" href="{{url_for('main.index' , page=page)}}">{{page}}</a>
+        {% endif %}
+        {% else %}
+        ...
+        {% endif %}
+        {% endfor %}
 
-</section>
-{% endmacro %}
+    </section>
+    {% endmacro %}
 
 
 {% macro Button(active , url , icon , param , text , color) %}
@@ -81,7 +81,7 @@
 
 
 {% macro SinglePostComponent(post , current_user) %}
-    <article class="card d-flex flex-row gap-2 shadow-sm m-5">
+    <article class="card d-flex flex-row gap-2 shadow-sm mt-3 ms-5 me-5">
         {% if post.post_owner.profile_picture %}
         <img class="img-fluid rounded-circle profile"
             src="{{url_for('static' , filename='files/{}'.format(post.post_owner.profile_picture))}}" alt="" />
@@ -101,7 +101,7 @@
                 {{post.story|safe}}
             </p>
             <section class="btn-group">
-                {% if post.post_owner.id == current_user.id %}
+                {% if post.post_owner.id == current_user.id or post.post_owner.type == 'Admin' %}
                 {{Button(post.active , 'main.delete_post' , "bi-trash" , post.id , "Delete" , "danger")}}
                 {{Button(post.active , 'main.edit_post' , "bi-floppy" , post.id , "Edit" , "warning")}}           
                 {{Button(post.active , 'main.close_topic' , "bi-door-closed" , post.id , "Close Topic" , "secondary")}}

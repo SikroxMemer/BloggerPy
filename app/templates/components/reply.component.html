@@ -1,62 +1,48 @@
-{% macro ReplyComponent(replies , current_user) %}
+{% macro ReplyComponent(replies , current_user , post) %}
+
 {% for reply in replies %}
-            <article class="card shadow-sm">
-
-                <div class="card-body d-flex flex-row gap-2">
-                    {% if reply.comment_owner.profile_picture %}
-
-                    <img class="img-fluid rounded-circle profile"
-                        src="{{url_for('static' , filename='files/{}'.format(reply.comment_owner.profile_picture))}}"
-                        alt="" />
-
-                    {% else %}
-
-                    <img class="img-fluid rounded-circle profile"
-                        src="{{url_for('static' , filename='images/empty.png')}}" />
-
-                    {% endif %}
-
-                    <section class="flex-grow-1">
-                        <p class="card-title"><a href="{{url_for('main.view_profile' , id=reply.comment_owner.id)}}">
-                                {{reply.comment_owner.username}}</a>&nbsp;<span>{{reply.comment_date}}</span>
-                        </p>
-                        <hr>
-
-                        <p class="card-text">
-                            {{ reply.comment|safe }}
-                        </p>
-
-                        {% if reply.comment_owner_id == current_user.id %}
-                        <a href="{{url_for('main.delete_reply' , id=reply.id , post=reply.post.id)}}"
-                            class="btn btn-danger btn-sm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
-                                <path
-                                    d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
-                            </svg><span>Delete</span></a></a>
-
-                        {% endif %}
-                    </section>
-                </div>
-
-            </article>
-            <section>
-
-                <!-- PAGINATION -->
-                {% for page in replies.iter_pages(left_edge=1,right_edge=1,left_current=1,right_current=2) %}
-                {% if page %}
-                {% if replies.page == page %}
-                <a class="btn btn-primary mb-4" href="{{url_for('main.view_post' , page=page , id=reply.post.id)}}">{{page}}</a>
-                {% else %}
-                <a class="btn btn-outline-primary mb-4"
-                    href="{{url_for('main.view_post' , page=page , id=reply.post.id)}}">{{page}}</a>
-                {% endif %}
-                {% else %}
-                ...
-                {% endif %}
-                {% endfor %}
-
-            </section>
-
-            {% endfor %}
-            
+<article class="card shadow-sm ms-5 me-5">
+    <div class="card-body d-flex flex-row gap-2">
+        {% if reply.comment_owner.profile_picture %}
+        <img class="img-fluid rounded-circle profile"
+            src="{{url_for('static' , filename='files/{}'.format(reply.comment_owner.profile_picture))}}" alt="" />
+        {% else %}
+        <img class="img-fluid rounded-circle profile" src="{{url_for('static' , filename='images/empty.png')}}" />
+        {% endif %}
+        <section class="flex-grow-1">
+            <p class="card-title"><a href="{{url_for('main.view_profile' , id=reply.comment_owner.id)}}">
+                    {{reply.comment_owner.username}}</a>&nbsp;<span>{{reply.comment_date}}</span>
+            </p>
+            <hr>
+            <p class="card-text">
+                {{ reply.comment|safe }}
+            </p>
+            {% if reply.comment_owner_id == current_user.id %}
+            <button {% if not reply.post.active %} disabled {% endif %}
+                class="btn btn-danger btn-sm d-flex flex-row align-content-center justify-content-center align-items-center">
+                <a class="text-light text-decoration-none d-flex flex-row gap-1"
+                    href="{{url_for('main.delete_reply' , id=reply.id , post=reply.post.id)}}">
+                    <i class="bi bi-trash"></i><span>Delete</span></a>
+            </button>
+            {% endif %}
+        </section>
+    </div>
+</article>
+{% endfor %}
+<!-- PAGINATION -->
+<section class="ms-5 me-5">
+    {% for page in replies.iter_pages(left_edge=1,right_edge=1,left_current=1,right_current=2) %}
+    {% if page %}
+    {% if replies.page == page %}
+    <a class="btn btn-primary mb-4"
+        href="{{url_for('main.view_post' , post=post , page=page , replies=replies , id=post.id)}}">{{page}}</a>
+    {% else %}
+    <a class="btn btn-outline-primary mb-4"
+        href="{{url_for('main.view_post', post=post  , page=page , replies=replies , id=post.id)}}">{{page}}</a>
+    {% endif %}
+    {% else %}
+    ...
+    {% endif %}
+    {% endfor %}
+</section>
 {% endmacro %}

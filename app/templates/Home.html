@@ -16,12 +16,29 @@
 
             {{ MessageComponent(messages) }}
 
-            <article class="col-lg-8 col-md-12 col-sm-12 p-2 d-flex flex-column gap-2">
+            <article class="col-lg-8 col-md-12 col-sm-12 p-2 d-flex flex-column gap-3">
+                
+                <h4 class="text-primary">Categories</h4>
+                <div class="d-flex flex-row justify-content-start gap-2">
+                    
+                    {% for category in categories %}
+                        <ul class="nav nav-underline">
+                            <li class="nav-item">
+                                <a class="nav-link text-primary {% if request.args.get('category') == category.id|string  %} active {% endif %}" 
+                                aria-current="page" href="{{url_for('main.index' , category=category.id)}}">
+                                    {{category.title}}
+                                </a>
+                            </li>
+                        </ul>
+                    {% endfor %}
+
+                </div>
+                
                 {{ PostComponent(posts) }}
             </article>
 
             <section class="col-lg-4 col-md-12 col-sm-12 d-flex flex-column gap-2 p-2">
-
+    
                 <ul class="list-group shadow-sm">
                     <h2 class=" list-group-item active">Content Requirements</h2>
                     <li class="list-group-item">Originality: We encourage original content that reflects your unique

@@ -21,23 +21,21 @@ def run():
         app.run()
 
 @cli.command()
-@click.option("--count")
-def populate(count):
+def populate():
 
-    console.log('[yellow]Prepering to populate database[/]')
     connection = sqlite3.connect(os.path.join(os.path.dirname(__file__) , 'instance' , 'main.db'))
-
     cursor = connection.cursor()
 
-    faker = Faker()
+    values = [('Frontend Development',), ('Backend Development',), 
+        ('Software Development',), ('CI/CD',) , 
+        ('Database/Data Science',),('Programing Languages',) ,
+        ('UML',) , ('UI/UX',)
+    ]
 
-    for i in range(int(count)):
-        cursor.execute("INSERT INTO Category VALUES (NULL , ?)" , (faker.company(),))
-    
+    cursor.executemany("INSERT INTO Category VALUES(NULL , ?)" , values)
     connection.commit()
     connection.close()
 
-    console.log('[green]Successfully populated database[/]')
-    
+    Console.print('successfully populated category table')
 
 cli()

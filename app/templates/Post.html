@@ -10,11 +10,12 @@
         {% from './components/message.component.html' import MessageComponent %}
         {% from './components/post.component.html' import SinglePostComponent %}
         {% from './components/reply.component.html' import ReplyComponent %}
-        {{ MessageComponent(messages) }}
-        <section class="col-lg-12 col-sm-12 col-md-12 p-2 d-flex flex-column gap-2">
+        <section class="col-lg-12 col-sm-12 col-md-12 p-2 d-flex flex-column justify-content-center gap-2">
+            {{ MessageComponent(messages) }}
             {{ SinglePostComponent(post , current_user) }}
-            {{ ReplyComponent(replies , current_user) }}
+            {{ ReplyComponent(replies , current_user , post) }}
         </section>
+        
     </main>
 </body>
 </html>

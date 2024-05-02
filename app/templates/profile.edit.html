@@ -2,23 +2,15 @@
 <html lang="en">
 
 <head>
-    {% include 'Base.template.html' %}
+    {% include 'base.template.html' %}
     {{ ckeditor.load() }}
     <title>Profile</title>
 </head>
 
 <body class="">
-    {% include 'Navbar.template.html' %}
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    {% for category , message in messages %}
-        <div class="alert alert-{{category}} alert-dismissible fade show w-50 text-center" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
+    {% include 'navbar.template.html' %}
+    {% from './components/message.component.html' import MessageComponent %}
+    {{ MessageComponent(messages) }}
     <section class="col-lg-6 col-md-12 col-sm-12 p-5 container">
         <div>
             <div>
