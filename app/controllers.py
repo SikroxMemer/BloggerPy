@@ -1,34 +1,42 @@
 from abc import ABC
-
 from app.forms import (
     PostForm , 
     LoginForm , 
     ReiterationForm , 
-    CategoryForm , 
     ReplyForm , 
     EditForm , 
     ProfileForm
 )
-
-
-
-from app.models import Category , Post , User , Comment
-from app import db
-from flask import flash , render_template , redirect , url_for , request
-
-
-from flask_login import current_user , login_user , logout_user
-from app import bcrypt
+from app.models import (
+    Category , 
+    Post , 
+    User , 
+    Comment
+)
+from app import (
+    db , 
+    bcrypt
+)
+from flask import (
+    flash , 
+    render_template , 
+    redirect , 
+    url_for , 
+    request
+)
+from flask_login import (
+    current_user , 
+    login_user , 
+    logout_user
+)
 from app.settings import UPLOAD_FOLDER
-
 from werkzeug.utils import secure_filename
-
 from os import path
+
 
 def secureFilename(filename:str):
     __DIR__ = path.join(path.abspath(path.dirname(__file__)) , UPLOAD_FOLDER , secure_filename(filename=filename))
     return __DIR__
-
 
 class AbstractController(ABC):
     @staticmethod
@@ -67,26 +75,20 @@ class PostController(AbstractController):
             flash("You've successfully created a post ", "success")
             return redirect(url_for('main.index'))
         return render_template('post.create.html', form=form)
-    
-
     @staticmethod
     def view(id):
         page = request.args.get('page' , 1 , type=int)
         post = Post.query.filter_by(id=id).first()
         replies = Comment.query.filter_by(post=post).paginate(page=page , per_page=5)
-        return render_template('post.html', post=post , replies=replies)
-    
+        return render_template('post.html', post=post , replies=replies) 
     @staticmethod
     def edit(id : int):
         categories = Category.query.all()
         choices: list[tuple] = []
-
         for choice in categories:
             choices.append((choice.id, choice.title))
-
         post = Post.query.filter_by(id=id).first()
         form = EditForm()
-
         form.edit_category.choices = choices
         if form.validate_on_submit():
             post.title = form.edit_title.data
@@ -95,9 +97,7 @@ class PostController(AbstractController):
             db.session.commit()
             flash('Your post has been edited', 'info')
             return redirect(url_for('main.view_post', id=id))
-        
         return render_template('post.edit.html', post=post , form=form)
-
     @staticmethod
     def destroy(id):
         post = Post.query.filter_by(id=id).first()
@@ -105,7 +105,6 @@ class PostController(AbstractController):
         db.session.commit()
         flash("You've successfully deleted your post", 'warning')
         return redirect(url_for('main.index'))
-    
     @staticmethod
     def close(id):
         post = Post.query.get(id)
@@ -134,7 +133,6 @@ class AuthController:
             else:
                 flash("No such user exists with the current credentials" , "warning")
         return render_template('login.html', form=form)
-    
     @staticmethod
     def register():
         form = ReiterationForm()
@@ -146,15 +144,11 @@ class AuthController:
             flash("You've successfully created an account", "success")
             return redirect(url_for('main.login'))
         return render_template('register.html', form=form)
-    
     @staticmethod
     def logout():
         logout_user()
         flash("You've Successfully Loged Out" , "success")
         return redirect(url_for('main.login'))
-    
-
-
 
 class ReplyController():
     @staticmethod
@@ -172,8 +166,6 @@ class ReplyController():
             flash('Reply Added' , 'success')
             return redirect(url_for('main.view_post' , id=id))
         return render_template('post.reply.html', post=post , form=form)
-  
-        
     @staticmethod
     def destroy(id , post):
         reply = Comment.query.filter_by(id=id).first()
@@ -181,8 +173,6 @@ class ReplyController():
         db.session.commit()
         flash('Reply Deleted' , 'info')
         return redirect(url_for('main.view_post' , id=post))
-
-
 class ProfileController():
     @staticmethod
     def edit():
@@ -191,19 +181,15 @@ class ProfileController():
         if form.validate_on_submit():
             file = form.profile_picture.data
             try:
-
                 if file.filename:
                     file.save(secureFilename(file.filename))
                     user.profile_picture = file.filename
-
             except OSError as error:
                 # mkdir(path.join(path.dirname(__file__) , 'static' , 'files'))
                 file.save(secureFilename(file.filename))
                 user.profile_picture = file.filename
-
             except AttributeError as error:
                 user.profile_picture = user.profile_picture
-            
             user.about = form.about.data
             user.username = form.username.data
             db.session.commit()
@@ -217,8 +203,6 @@ class ProfileController():
             flash('No User with the ID : {} Found !'.format(id) , 'danger')
             return redirect(url_for('main.index'))
         return render_template('profile.html' , user=user)
-    
-
 class AdminController:
     @staticmethod
     def view():
