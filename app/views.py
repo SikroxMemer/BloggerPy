@@ -6,7 +6,6 @@ from flask import (
     flash , 
     request
 )
-
 from app.controllers import (
     PostController , 
     AuthController , 
@@ -14,17 +13,15 @@ from app.controllers import (
     ProfileController ,
     AdminController
 )
-
 from app.extenstions import login_manager
-
 from app.models import (
     User, 
     Post,
     Category
 )
-
 from app import login_required
 from os import path , mkdir
+
 
 
 
