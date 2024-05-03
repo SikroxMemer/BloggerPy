@@ -22,15 +22,12 @@ from app.models import (
 from app import login_required
 from os import path , mkdir
 
-
-
-
 try:
     mkdir(path.join(path.dirname(__file__) , 'static' , 'files'))
 except:
     pass
 
-routes = Blueprint('main', __name__ , template_folder='templates')
+routes = Blueprint('main', __name__ , template_folder=path.abspath(path.join(path.dirname(__file__) , 'templates')))
 
 
 @login_manager.user_loader
