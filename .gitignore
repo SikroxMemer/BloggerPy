@@ -59,7 +59,7 @@ cover/
 *.pot
 
 app/static/files
-instance
+instance/
 
 main.db
 
