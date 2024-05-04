@@ -101,10 +101,10 @@
                 {{post.story|safe}}
             </p>
             <section class="btn-group">
-                {% if post.post_owner.id == current_user.id or post.post_owner.type == 'Admin' %}
-                {{Button(post.active , 'main.delete_post' , "bi-trash" , post.id , "Delete" , "danger")}}
-                {{Button(post.active , 'main.edit_post' , "bi-floppy" , post.id , "Edit" , "warning")}}           
-                {{Button(post.active , 'main.close_topic' , "bi-door-closed" , post.id , "Close Topic" , "secondary")}}
+                {% if post.post_owner.id == current_user.id %}
+                    {{Button(post.active , 'main.delete_post' , "bi-trash" , post.id , "Delete" , "danger")}}
+                    {{Button(post.active , 'main.edit_post' , "bi-floppy" , post.id , "Edit" , "warning")}}           
+                    {{Button(post.active , 'main.close_topic' , "bi-door-closed" , post.id , "Close Topic" , "secondary")}}
                 {% endif %}
                 {{Button(post.active , 'main.create_reply' , "bi-reply-all" , post.id , "Reply" , "info")}}
             </section>
