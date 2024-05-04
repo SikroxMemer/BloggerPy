@@ -27,7 +27,7 @@ Stack is a web application built using Flask, a Python web framework, designed f
 To run the Stack app locally, follow these steps
 
 ```bash
-git clone https://github.com/yourusername/stack-app.git
+git clone https://github.com/SikroxMemer/Stack.git
 cd stack-app
 ```
 
