@@ -12,7 +12,7 @@
 
     {{ MessageComponent(messages) }}
 
-    <form method="post" action="" class="d-flex flex-column align-content-center justify-content-center align-items-center gap-2 col-lg-2 col-md-8 col-sm-12">
+    <form method="post" action="" class="d-flex flex-column align-content-center justify-content-center gap-2 col-lg-2 col-md-8 col-sm-12">
         <h1 class="text-center">Login</h1>
         {{ form.hidden_tag() }}
         {{ form.email }}
@@ -20,11 +20,11 @@
         {{ form.submit }}
         {% if form.errors %}
         {% for key , value in form.errors.items() %}
-        <p class="text-danger text-center">{{key}} : {{value[0]}}</p>
+        <p class="text-danger text-center">{{value[0]}}</p>
         {% endfor %}
         {% endif %}
         <p>
-            <span>New User</span> <a href="{{url_for('main.register')}}">Register Here</a>
+            <span>New User ?</span> <a href="{{url_for('main.register')}}">Register Here</a>
         </p>
     </form>
 

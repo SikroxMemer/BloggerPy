@@ -22,20 +22,25 @@ def run():
 
 @cli.command()
 def populate():
-
     connection = sqlite3.connect(os.path.join(os.path.dirname(__file__) , 'instance' , 'main.db'))
     cursor = connection.cursor()
-
-    values = [('Frontend Development',), ('Backend Development',), 
-        ('Software Development',), ('CI/CD',) , 
-        ('Database/Data Science',),('Programing Languages',) ,
+    values = [
+        ('Frontend Development',), 
+        ('Backend Development',), 
+        ('Software Development',), 
+        ('CI/CD',) , 
+        ('Database/Data Science',),
+        ('Programing Languages',) ,
         ('UML',) , ('UI/UX',)
     ]
+    try:
+        cursor.executemany("INSERT INTO Category VALUES(NULL , ?)" , values)
+        connection.commit()
+        connection.close()
+    except Exception as error:
+        console.print("\n[red]{}[/]".format(error))
+    finally:
+        console.print("[yellow]Tasked finished[/]")
 
-    cursor.executemany("INSERT INTO Category VALUES(NULL , ?)" , values)
-    connection.commit()
-    connection.close()
-
-    Console.print('successfully populated category table')
 
 cli()

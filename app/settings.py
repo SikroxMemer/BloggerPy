@@ -1,4 +1,4 @@
-SQLALCHEMY_DATABASE_URI='sqlite:///main.db'
+SQLALCHEMY_DATABASE_URI='mysql+pymysql://root:753159@localhost/stack'
 SECRET_KEY='SUPER_SECRET_KEY'
 UPLOAD_FOLDER="static\\files"
 LOGIN_VIEW = 'Login'

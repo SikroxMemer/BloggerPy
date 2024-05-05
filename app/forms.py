@@ -6,30 +6,44 @@ from flask_wtf.file import (FileField, FileAllowed)
 from app.models import User
 
 
-class ReiterationForm(FlaskForm):
-    username = StringField(validators=[InputRequired(), Length(
-        min=4, max=70)], render_kw={"placeholder": "Username", "class": "form-control"})
-    password = PasswordField(validators=[InputRequired(), Length(
-        min=7, max=20)], render_kw={"placeholder": "Password", "class": "form-control"})
-    email = EmailField(validators=[InputRequired(), Length(
-        min=6, max=70)], render_kw={"placeholder": "Email", "class": "form-control"})
+class RegisterForm(FlaskForm):
 
-    submit = SubmitField("Register", render_kw={
-                         "class": "btn btn-primary form-control"})
+    username = StringField(
+        validators=[InputRequired(), Length(min=6, max=70)], 
+        render_kw={"placeholder": "Username", "class": "form-control"}
+    )
+    password = PasswordField(
+        validators=[InputRequired(), Length(min=7, max=20)], 
+        render_kw={"placeholder": "Password", "class": "form-control"}
+    )
+    confirm_password = PasswordField(
+        validators=[InputRequired(), Length(min=7, max=20)], 
+        render_kw={"placeholder": "Confirm Password", "class": "form-control"}
+    )
+    email = EmailField(
+        validators=[InputRequired(), Length(min=6, max=70)], 
+        render_kw={"placeholder": "Email", "class": "form-control"}
+    )
+
+    submit = SubmitField("Register", render_kw={"class": "btn btn-primary form-control"})
 
     def validate_username(self, username):
         existing_user = User.query.filter_by(username=username.data).first()
         if existing_user:
-            raise ValidationError(
-                "Username already exists , Please Chose Another One"
-            )
+            raise ValidationError("Verification Error : Username already exists , please chose another one.")
         
+    def validate_password(self, password):
+        if self.password.data != self.confirm_password.data:
+            raise ValidationError("Verification Error : password must match its confirmation.")
+    
     def validate_email(self , email):
-        existing_user = User.query.filter_by(username=email.data).first()
+        existing_user = User.query.filter_by(email=email.data).first()
         if existing_user:
-            raise ValidationError(
-                "Email already exists , Please Chose Another One"
-            )
+            raise ValidationError("Verification Error : email already exists , please chose another one.")
+        
+
+
+
 
 
 class LoginForm(FlaskForm):

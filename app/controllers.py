@@ -2,7 +2,7 @@ from abc import ABC
 from app.forms import (
     PostForm , 
     LoginForm , 
-    ReiterationForm , 
+    RegisterForm , 
     ReplyForm , 
     EditForm , 
     ProfileForm
@@ -133,9 +133,11 @@ class AuthController:
             else:
                 flash("No such user exists with the current credentials" , "warning")
         return render_template('login.html', form=form)
+    
+    
     @staticmethod
     def register():
-        form = ReiterationForm()
+        form = RegisterForm()
         if form.validate_on_submit():
             hashed_password = bcrypt.generate_password_hash(form.password.data)
             new_user = User(username=form.username.data,password=hashed_password, email=form.email.data)
